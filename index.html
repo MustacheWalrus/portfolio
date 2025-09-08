@@ -77,6 +77,10 @@
             opacity: 1;
         }
 
+        .project-card iframe {
+            pointer-events: none; /* Allows clicks to pass through to the card */
+        }
+
         .aspect-16-9 {
             position: relative;
             padding-top: 56.25%; /* 9 / 16 = 0.5625 */
@@ -275,10 +279,10 @@
 
             // --- DATA ---
             const projects = [
-                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf' },
+                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf', thumbnailImageUrl: 'https://placehold.co/600x338/ffffff/1a1a1a?text=TLL+Guide' },
                 { id: "mac-video-essay", title: "MAC Video Essay", date: "Spring 2025", category: "video", mediaType: 'video', youtubeId: null },
                 { id: "power-of-love", title: "Power of Love", date: "Spring 2025", category: "3d", mediaType: '3d-scan' },
-                { id: "interactive-sky", title: "Interactive Sky Animation", date: "Spring 2025", category: "interactive", mediaType: 'p5js' },
+                { id: "interactive-sky", title: "Interactive Sky Animation", date: "Spring 2025", category: "interactive", mediaType: 'p5js', thumbnailUrl: 'projects/interactive-sky-thumb.html' },
                 { id: "pixel-manta-rays", title: "Pixel Manta Rays", date: "Spring 2025", category: "interactive", mediaType: 'p5js' },
                 { id: "tech-cyclical", title: "technology is cyclical", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId: null },
                 { id: "spaced-out", title: "Spaced Out", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId: null },
@@ -297,9 +301,9 @@
                 { id: "groundhogs-day", title: "Groundhogs Day", date: "2022", category: "audio", mediaType: 'audio' },
                 { id: "nu-audio", title: "Nü", date: "2019", category: "audio", mediaType: 'audio' },
                 { id: "h-beat", title: "H-beat", date: "2019", category: "audio", mediaType: 'audio' },
-                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image' },
-                { id: "hierarchy-wheel", title: "Revamp of hierarchy wheel", date: "2019", category: "illustration", mediaType: 'image' },
-                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image' },
+                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'https://placehold.co/600x338/ffff00/1a1a1a?text=Grord+Cover' },
+                { id: "hierarchy-wheel", title: "Revamp of hierarchy wheel", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'https://placehold.co/600x338/0000ff/ffffff?text=Hierarchy' },
+                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'https://placehold.co/600x338/ff0000/ffffff?text=Flyer' },
                 { id: "hi-hat-dough", title: "Hi Hat in Dough and tides not as so", date: "2025", category: "illustration", mediaType: 'image' },
             ];
 
@@ -333,7 +337,11 @@
 
                 filteredProjects.forEach(project => {
                     let tileContent;
-                    if (project.category === 'video' && project.youtubeId) {
+                    if (project.thumbnailUrl) {
+                        tileContent = `<iframe src="${project.thumbnailUrl}" class="w-full h-full" frameborder="0" scrolling="no"></iframe>`;
+                    } else if (project.thumbnailImageUrl) {
+                        tileContent = `<img src="${project.thumbnailImageUrl}" alt="${project.title}" class="w-full h-full object-cover">`;
+                    } else if (project.category === 'video' && project.youtubeId) {
                         tileContent = `<img src="https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg" alt="${project.title}" class="w-full h-full object-cover">`;
                     } else {
                         const placeholderSvg = placeholders[project.category] || placeholders['illustration'];
@@ -462,3 +470,4 @@
     </script>
 </body>
 </html>
+
