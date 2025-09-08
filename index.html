@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liam Yehudai | Creative Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Define color variables for light and dark themes */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --primary-color: #ff0000; /* Red */
+            --secondary-color: #0000ff; /* Blue */
+            --tertiary-color: #ffff00; /* Yellow */
+            --accent-color: #333333;
+            --card-bg: #f7f7f7;
+            --card-border: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --primary-color: #ff3333; /* Brighter Red */
+            --secondary-color: #3366ff; /* Brighter Blue */
+            --tertiary-color: #ffff66; /* Brighter Yellow */
+            --accent-color: #cccccc;
+            --card-bg: #2a2a2a;
+            --card-border: #444444;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+        
+        /* General styling */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Art Deco Triangle Motif */
+        .deco-triangle {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+
+        /* Custom styling for components */
+        .filter-btn {
+            transition: all 0.2s ease-in-out;
+            border: 2px solid transparent;
+        }
+        .filter-btn.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .project-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 24px var(--shadow-color);
+        }
+
+        .project-card .info-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .project-card:hover .info-overlay {
+            opacity: 1;
+        }
+
+        /* Modal styling */
+        #modal-backdrop {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #modal-content {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+        }
+        #modal-container.open #modal-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Theme switcher styling */
+        .theme-switcher {
+            width: 50px;
+            height: 26px;
+            background-color: var(--accent-color);
+            border-radius: 13px;
+            padding: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .theme-switcher-dot {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        html.dark .theme-switcher-dot {
+            transform: translateX(24px);
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* SVG placeholder fill */
+        .placeholder-svg .bg { fill: var(--card-bg); }
+        .placeholder-svg .primary { fill: var(--primary-color); }
+        .placeholder-svg .secondary { fill: var(--secondary-color); }
+        .placeholder-svg .tertiary { fill: var(--tertiary-color); }
+        .placeholder-svg .text-color { fill: var(--text-color); }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="header" class="sticky top-0 z-40 bg-[var(--bg-color)]/80 backdrop-blur-md border-b border-[var(--card-border)]">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold tracking-wider" style="color: var(--text-color);">
+                LIAM YEHUDAI
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#work" class="text-lg hover:text-[var(--primary-color)] transition-colors">Work</a>
+                <a href="#about" class="text-lg hover:text-[var(--primary-color)] transition-colors">About</a>
+                <div id="theme-switcher" class="theme-switcher">
+                    <div class="theme-switcher-dot"></div>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#work" class="block py-2 text-lg hover:text-[var(--primary-color)] transition-colors">Work</a>
+            <a href="#about" class="block py-2 text-lg hover:text-[var(--primary-color)] transition-colors">About</a>
+            <div class="flex items-center mt-2 space-x-4">
+                 <span>Theme:</span>
+                 <div id="theme-switcher-mobile" class="theme-switcher">
+                    <div class="theme-switcher-dot"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- Main Feature Section -->
+        <section id="feature" class="mb-24">
+            <h2 class="text-4xl font-bold mb-8 text-center md:text-left">Main Feature</h2>
+            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 p-8 rounded-lg" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+                <div class="w-full md:w-1/2">
+                    <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/800x450/1a1a1a/ffffff?text=Ctrl+Art+Create" alt="Ctrl+Art+Create" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 text-center md:text-left">
+                    <span class="font-mono text-sm" style="color: var(--accent-color);">Spring 2025</span>
+                    <h3 class="text-3xl font-bold mt-2" style="color: var(--primary-color);">Ctrl+Art+Create</h3>
+                    <p class="mt-4 text-lg">
+                        A solo art show exploring the intersection of digital fabrication, interactive media, and traditional artistry. This exhibition features a collection of works created using AI, 3D printing, and creative coding.
+                    </p>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="inline-block mt-6 px-8 py-3 rounded-full text-white font-bold transition-transform duration-300 hover:scale-105" style="background-color: var(--secondary-color);">
+                        Visit Website
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Work Section -->
+        <section id="work" class="mb-24">
+            <h2 class="text-4xl font-bold mb-8 text-center">All Projects</h2>
+            <!-- Filters -->
+            <div id="filters" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
+                <button class="filter-btn active px-4 py-2" data-filter="all">All</button>
+                <button class="filter-btn px-4 py-2" data-filter="video">Video</button>
+                <button class="filter-btn px-4 py-2" data-filter="interactive">Interactive</button>
+                <button class="filter-btn px-4 py-2" data-filter="website">Website</button>
+                <button class="filter-btn px-4 py-2" data-filter="3d">3D Scan</button>
+                <button class="filter-btn px-4 py-2" data-filter="audio">Audio</button>
+                <button class="filter-btn px-4 py-2" data-filter="illustration">Illustration</button>
+            </div>
+            <!-- Project Grid -->
+            <div id="project-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Projects will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 rounded-lg text-center" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+             <h2 class="text-4xl font-bold mb-4">About Me</h2>
+             <p class="max-w-3xl mx-auto text-lg mb-8">
+                 I am a creative developer and artist passionate about building unique digital experiences. My work spans across web development, interactive art, video production, and design. Let's create something amazing together.
+             </p>
+             <div class="flex justify-center items-center gap-6">
+                <a href="mailto:liam.yehudai@gmail.com" class="px-8 py-3 rounded-full text-white font-bold transition-transform duration-300 hover:scale-105" style="background-color: var(--primary-color);">
+                    Contact Me
+                </a>
+                <a href="#" class="px-8 py-3 rounded-full font-bold border-2 transition-transform duration-300 hover:scale-105" style="border-color: var(--secondary-color); color: var(--secondary-color);">
+                    Download CV
+                </a>
+             </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center py-6 mt-12 border-t border-[var(--card-border)]">
+        <p style="color: var(--accent-color);">&copy; 2025 Liam Yehudai. All Rights Reserved.</p>
+    </footer>
+
+
+    <!-- Modal -->
+    <div id="modal-container" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <div id="modal-backdrop" class="fixed inset-0 bg-black/70"></div>
+        <div id="modal-content" class="relative bg-[var(--bg-color)] rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div class="p-6 border-b border-[var(--card-border)] flex justify-between items-center">
+                <div>
+                    <h3 id="modal-title" class="text-2xl font-bold"></h3>
+                    <p class="font-mono text-sm" style="color: var(--accent-color);">
+                        <span id="modal-date"></span> &mdash; <span id="modal-medium"></span>
+                    </p>
+                </div>
+                <button id="modal-close-btn" class="text-2xl hover:text-[var(--primary-color)]">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-grow">
+                <div id="modal-body-content" class="mb-6">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+                <p id="modal-blurb" class="text-base leading-relaxed"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- DATA ---
+            const projects = [
+                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf', blurb: "A comprehensive design guide created for the TLL department.", contentUrl: `projects/tll-design-guide.html` },
+                { id: "mac-video-essay", title: "MAC Video Essay", date: "Spring 2025", category: "video", mediaType: 'video', blurb: "A video essay exploring a specific topic.", contentUrl: `projects/mac-video-essay.html` },
+                { id: "power-of-love", title: "Power of Love", date: "Spring 2025", category: "3d", mediaType: '3d-scan', blurb: "A 3D scan capturing a moment of connection.", contentUrl: `projects/power-of-love.html` },
+                { id: "interactive-sky", title: "Interactive Sky Animation", date: "Spring 2025", category: "interactive", mediaType: 'p5js', blurb: "An interactive p5.js animation of a dynamic sky.", contentUrl: `projects/interactive-sky.html` },
+                { id: "pixel-manta-rays", title: "Pixel Manta Rays", date: "Spring 2025", category: "interactive", mediaType: 'p5js', blurb: "A generative art piece featuring swimming manta rays.", contentUrl: `projects/pixel-manta-rays.html` },
+                { id: "tech-cyclical", title: "technology is cyclical", date: "Fall 2024", category: "video", mediaType: 'video', blurb: "A short film about the cyclical nature of technology.", contentUrl: `projects/tech-cyclical.html` },
+                { id: "spaced-out", title: "Spaced Out", date: "Fall 2024", category: "video", mediaType: 'video', blurb: "A creative video project with a space theme.", contentUrl: `projects/spaced-out.html` },
+                { id: "parallax-city", title: "Parallax city scape", date: "Fall 2024", category: "interactive", mediaType: 'p5js', blurb: "A parallax scrolling cityscape created with p5.js.", contentUrl: `projects/parallax-city.html` },
+                { id: "year-in-review", title: "A year in Review", date: "Spring 2024", category: "video", mediaType: 'video', blurb: "A video montage summarizing the highlights of the year.", contentUrl: `projects/year-in-review.html` },
+                { id: "bossa-nova-boy", title: "Bossa Nova Boy", date: "Spring 2024", category: "3d", mediaType: '3d-scan', blurb: "A 3D scan project with a musical theme.", contentUrl: `projects/bossa-nova-boy.html` },
+                { id: "liam-lars", title: "Liam and Lars Project", date: "Fall 2023", category: "video", mediaType: 'video', blurb: "A collaborative video project.", contentUrl: `projects/liam-lars.html` },
+                { id: "epmo-office", title: "EPMO OFFICE", date: "Fall 2022", category: "video", mediaType: 'video', blurb: "A video created for the EPMO office.", contentUrl: `projects/epmo-office.html` },
+                { id: "wusb-fm", title: "WUSB.FM", date: "Ongoing", category: "website", mediaType: 'website', blurb: "Website development for the WUSB.FM radio station.", contentUrl: `projects/wusb-fm.html` },
+                { id: "li-history-journal", title: "LI History Journal", date: "Fall 2021", category: "website", mediaType: 'website', blurb: "Website for the Long Island History Journal.", contentUrl: `projects/li-history-journal.html` },
+                { id: "envirodanger", title: "Envirodanger Website", date: "2019-2025", category: "website", mediaType: 'website', blurb: "A long-term project focused on environmental awareness.", contentUrl: `projects/envirodanger.html` },
+                { id: "remove-sunglasses", title: "Remove the Sunglasses", date: "2020", category: "video", mediaType: 'video', blurb: "A short film from 2020.", contentUrl: `projects/remove-sunglasses.html` },
+                { id: "wall-of-painting", title: "Wall of Painting Bumper", date: "2022", category: "video", mediaType: 'video', blurb: "A bumper video for a painting exhibition.", contentUrl: `projects/wall-of-painting.html` },
+                { id: "pikachu-overlay", title: "Pikachu overlay", date: "2022", category: "video", mediaType: 'video', blurb: "A video project featuring a Pikachu overlay.", contentUrl: `projects/pikachu-overlay.html` },
+                { id: "twow-fm", title: "Twow FM", date: "2018", category: "audio", mediaType: 'audio', blurb: "An audio project for Twow FM.", contentUrl: `projects/twow-fm.html` },
+                { id: "groundhogs-day", title: "Groundhogs Day", date: "2022", category: "audio", mediaType: 'audio', blurb: "An audio piece related to Groundhog's Day.", contentUrl: `projects/groundhogs-day.html` },
+                { id: "nu-audio", title: "Nü", date: "2019", category: "audio", mediaType: 'audio', blurb: "An audio project titled 'Nü'.", contentUrl: `projects/nu-audio.html` },
+                { id: "h-beat", title: "H-beat", date: "2019", category: "audio", mediaType: 'audio', blurb: "A beat created in 2019.", contentUrl: `projects/h-beat.html` },
+                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image', blurb: "Album cover illustration for Grord.", contentUrl: `projects/grord-album-cover.html` },
+                { id: "hierarchy-wheel", title: "Revamp of hierarchy wheel", date: "2019", category: "illustration", mediaType: 'image', blurb: "A redesign of a hierarchy wheel graphic.", contentUrl: `projects/hierarchy-wheel.html` },
+                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image', blurb: "A flyer design for faculty.", contentUrl: `projects/faculty-flyer.html` },
+                { id: "hi-hat-dough", title: "Hi Hat in Dough and tides not as so", date: "2025", category: "illustration", mediaType: 'image', blurb: "An illustrative piece with a unique title.", contentUrl: `projects/hi-hat-dough.html` },
+            ];
+
+            const placeholders = {
+                video: `<svg class="placeholder-svg" viewBox="0 0 100 100"><rect class="bg" width="100" height="100"/><rect class="secondary" x="15" y="30" width="55" height="40" rx="8"/><path class="primary" d="M70 40 l 18 -9 v 28 l -18 -9 z"/></svg>`,
+                interactive: `<svg class="placeholder-svg" viewBox="0 0 100 100"><rect class="bg" width="100" height="100"/><g transform="scale(0.19) translate(2, 2)"><path class="secondary" d="M467.51 248.83c-18.4-83.18-45.69-136.24-89.43-149.17A91.5 91.5 0 0 0 352 96c-26.89 0-48.11 16-96 16s-69.15-16-96-16a99 99 0 0 0-27.2 3.66C89 112.59 61.94 165.7 43.33 248.83c-19 84.91-15.56 152 21.58 164.88c26 9 49.25-9.61 71.27-37c25-31.2 55.79-40.8 119.82-40.8s93.62 9.6 118.66 40.8c22 27.41 46.11 45.79 71.42 37.16c41.02-14.01 40.44-79.13 21.43-165.04Z"/><path fill="none" stroke="var(--primary-color)" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M160 176v96m48-48h-96"/><g class="tertiary"><circle cx="292" cy="224" r="20"/><path d="M336 288a20 20 0 1 1 20-19.95A20 20 0 0 1 336 288"/><circle cx="336" cy="180" r="20"/><circle cx="380" cy="224" r="20"/></g></g></svg>`,
+                website: `<svg class="placeholder-svg" viewBox="0 0 100 100"><rect class="bg" width="100" height="100"/><rect class="secondary" x="20" y="20" width="60" height="60" rx="5"/><line class="primary" x1="20" y1="35" x2="80" y2="35" stroke="var(--primary-color)" stroke-width="5"/><circle class="tertiary" cx="28" cy="28" r="3"/><circle class="tertiary" cx="38" cy="28" r="3"/></svg>`,
+                '3d': `<svg class="placeholder-svg" viewBox="0 0 100 100"><rect class="bg" width="100" height="100"/><path class="primary" d="M20 30 L50 15 L80 30 L50 45 Z"/><path class="secondary" d="M20 30 L20 70 L50 85 L50 45 Z"/><path class="tertiary" d="M80 30 L80 70 L50 85 L50 45 Z"/></svg>`,
+                audio: `<svg class="placeholder-svg" viewBox="0 0 100 100"><rect class="bg" width="100" height="100"/><rect class="secondary" x="15" y="30" width="10" height="40" rx="3"/><rect class="primary" x="30" y="20" width="10" height="60" rx="3"/><rect class="tertiary" x="45" y="10" width="10" height="80" rx="3"/><rect class="primary" x="60" y="20" width="10" height="60" rx="3"/><rect class="secondary" x="75" y="30" width="10" height="40" rx="3"/></svg>`,
+                illustration: `<svg class="placeholder-svg" viewBox="0 0 100 100"><rect class="bg" width="100" height="100"/><circle class="primary" cx="35" cy="35" r="15"/><rect class="secondary" x="50" y="50" width="30" height="30"/><polygon class="tertiary" points="30,70 70,70 50,50" /></svg>`
+            };
+            
+            // --- ELEMENTS ---
+            const projectGrid = document.getElementById('project-grid');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const modalContainer = document.getElementById('modal-container');
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDate = document.getElementById('modal-date');
+            const modalMedium = document.getElementById('modal-medium');
+            const modalBlurb = document.getElementById('modal-blurb');
+            const modalBodyContent = document.getElementById('modal-body-content');
+
+            // --- FUNCTIONS ---
+            function renderProjects(filter = 'all') {
+                projectGrid.innerHTML = '';
+                const filteredProjects = filter === 'all' 
+                    ? projects 
+                    : projects.filter(p => p.category === filter);
+
+                filteredProjects.forEach(project => {
+                    const placeholderSvg = placeholders[project.category] || placeholders['illustration'];
+                    const card = document.createElement('div');
+                    card.className = 'project-card rounded-lg overflow-hidden cursor-pointer';
+                    card.dataset.id = project.id;
+                    card.innerHTML = `
+                        <div class="aspect-w-16 aspect-h-9 relative">
+                            <div class="w-full h-full">${placeholderSvg}</div>
+                            <div class="info-overlay absolute inset-0 bg-black/70 p-4 flex flex-col justify-end text-white">
+                                <h3 class="text-xl font-bold">${project.title}</h3>
+                                <p class="font-mono text-sm">${project.date} &mdash; ${project.mediaType}</p>
+                            </div>
+                        </div>
+                    `;
+                    projectGrid.appendChild(card);
+                });
+
+                // Add event listeners to newly created cards
+                document.querySelectorAll('.project-card').forEach(card => {
+                    card.addEventListener('click', () => openModal(card.dataset.id));
+                });
+            }
+
+            async function openModal(projectId) {
+                const project = projects.find(p => p.id === projectId);
+                if (!project) return;
+
+                modalTitle.textContent = project.title;
+                modalDate.textContent = project.date;
+                modalMedium.textContent = project.mediaType;
+                modalBlurb.textContent = project.blurb;
+                
+                // Fetch and load content from external file
+                try {
+                    const response = await fetch(project.contentUrl);
+                    if (!response.ok) throw new Error('Content not found');
+                    const contentHtml = await response.text();
+                    modalBodyContent.innerHTML = contentHtml;
+                } catch (error) {
+                    modalBodyContent.innerHTML = `<p class="text-center text-red-500">Error: Could not load project content.</p>`;
+                    console.error('Error fetching project content:', error);
+                }
+
+                modalContainer.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                // Delay adding 'open' to trigger transition
+                setTimeout(() => modalContainer.classList.add('open'), 10);
+            }
+
+            function closeModal() {
+                modalContainer.classList.remove('open');
+                document.body.style.overflow = '';
+                 // Wait for transition to finish before hiding
+                setTimeout(() => {
+                    modalContainer.classList.add('hidden');
+                    modalBodyContent.innerHTML = ''; // Clear content to stop videos/iframes
+                }, 300);
+            }
+
+            // --- THEME SWITCHER LOGIC ---
+            const themeSwitchers = [document.getElementById('theme-switcher'), document.getElementById('theme-switcher-mobile')];
+            const htmlEl = document.documentElement;
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    htmlEl.classList.add('dark');
+                    htmlEl.classList.remove('light');
+                } else {
+                    htmlEl.classList.add('light');
+                    htmlEl.classList.remove('dark');
+                }
+            };
+            
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+            
+            themeSwitchers.forEach(switcher => {
+                switcher.addEventListener('click', () => {
+                    const newTheme = htmlEl.classList.contains('dark') ? 'light' : 'dark';
+                    localStorage.setItem('theme', newTheme);
+                    applyTheme(newTheme);
+                });
+            });
+
+
+            // --- EVENT LISTENERS ---
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderProjects(button.dataset.filter);
+                });
+            });
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalBackdrop.addEventListener('click', closeModal);
+            
+            // Mobile Menu
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+
+            // --- INITIAL RENDER ---
+            renderProjects();
+        });
+    </script>
+</body>
+</html>
+
