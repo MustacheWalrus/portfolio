@@ -77,6 +77,18 @@
             opacity: 1;
         }
 
+        .aspect-16-9 {
+            position: relative;
+            padding-top: 56.25%; /* 9 / 16 = 0.5625 */
+        }
+        .aspect-16-9 > * {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         /* Modal styling */
         #modal-backdrop {
             transition: opacity 0.3s ease-in-out;
@@ -253,43 +265,42 @@
                 <div id="modal-body-content" class="mb-6">
                     <!-- Dynamic content will be loaded here -->
                 </div>
-                <p id="modal-blurb" class="text-base leading-relaxed"></p>
+                <div id="modal-blurb" class="text-base leading-relaxed"></div>
             </div>
         </div>
     </div>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- DATA ---
             const projects = [
-                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf', blurb: "A comprehensive design guide created for the TLL department.", contentUrl: `projects/tll-design-guide.html` },
-                { id: "mac-video-essay", title: "MAC Video Essay", date: "Spring 2025", category: "video", mediaType: 'video', blurb: "A video essay exploring a specific topic.", contentUrl: `projects/mac-video-essay.html` },
-                { id: "power-of-love", title: "Power of Love", date: "Spring 2025", category: "3d", mediaType: '3d-scan', blurb: "A 3D scan capturing a moment of connection.", contentUrl: `projects/power-of-love.html` },
-                { id: "interactive-sky", title: "Interactive Sky Animation", date: "Spring 2025", category: "interactive", mediaType: 'p5js', blurb: "An interactive p5.js animation of a dynamic sky.", contentUrl: `projects/interactive-sky.html` },
-                { id: "pixel-manta-rays", title: "Pixel Manta Rays", date: "Spring 2025", category: "interactive", mediaType: 'p5js', blurb: "A generative art piece featuring swimming manta rays.", contentUrl: `projects/pixel-manta-rays.html` },
-                { id: "tech-cyclical", title: "technology is cyclical", date: "Fall 2024", category: "video", mediaType: 'video', blurb: "A short film about the cyclical nature of technology.", contentUrl: `projects/tech-cyclical.html` },
-                { id: "spaced-out", title: "Spaced Out", date: "Fall 2024", category: "video", mediaType: 'video', blurb: "A creative video project with a space theme.", contentUrl: `projects/spaced-out.html` },
-                { id: "parallax-city", title: "Parallax city scape", date: "Fall 2024", category: "interactive", mediaType: 'p5js', blurb: "A parallax scrolling cityscape created with p5.js.", contentUrl: `projects/parallax-city.html` },
-                { id: "year-in-review", title: "A year in Review", date: "Spring 2024", category: "video", mediaType: 'video', blurb: "A video montage summarizing the highlights of the year.", contentUrl: `projects/year-in-review.html` },
-                { id: "bossa-nova-boy", title: "Bossa Nova Boy", date: "Spring 2024", category: "3d", mediaType: '3d-scan', blurb: "A 3D scan project with a musical theme.", contentUrl: `projects/bossa-nova-boy.html` },
-                { id: "liam-lars", title: "Liam and Lars Project", date: "Fall 2023", category: "video", mediaType: 'video', blurb: "A collaborative video project.", contentUrl: `projects/liam-lars.html` },
-                { id: "epmo-office", title: "EPMO OFFICE", date: "Fall 2022", category: "video", mediaType: 'video', blurb: "A video created for the EPMO office.", contentUrl: `projects/epmo-office.html` },
-                { id: "wusb-fm", title: "WUSB.FM", date: "Ongoing", category: "website", mediaType: 'website', blurb: "Website development for the WUSB.FM radio station.", contentUrl: `projects/wusb-fm.html` },
-                { id: "li-history-journal", title: "LI History Journal", date: "Fall 2021", category: "website", mediaType: 'website', blurb: "Website for the Long Island History Journal.", contentUrl: `projects/li-history-journal.html` },
-                { id: "envirodanger", title: "Envirodanger Website", date: "2019-2025", category: "website", mediaType: 'website', blurb: "A long-term project focused on environmental awareness.", contentUrl: `projects/envirodanger.html` },
-                { id: "remove-sunglasses", title: "Remove the Sunglasses", date: "2020", category: "video", mediaType: 'video', blurb: "A short film from 2020.", contentUrl: `projects/remove-sunglasses.html` },
-                { id: "wall-of-painting", title: "Wall of Painting Bumper", date: "2022", category: "video", mediaType: 'video', blurb: "A bumper video for a painting exhibition.", contentUrl: `projects/wall-of-painting.html` },
-                { id: "pikachu-overlay", title: "Pikachu overlay", date: "2022", category: "video", mediaType: 'video', blurb: "A video project featuring a Pikachu overlay.", contentUrl: `projects/pikachu-overlay.html` },
-                { id: "twow-fm", title: "Twow FM", date: "2018", category: "audio", mediaType: 'audio', blurb: "An audio project for Twow FM.", contentUrl: `projects/twow-fm.html` },
-                { id: "groundhogs-day", title: "Groundhogs Day", date: "2022", category: "audio", mediaType: 'audio', blurb: "An audio piece related to Groundhog's Day.", contentUrl: `projects/groundhogs-day.html` },
-                { id: "nu-audio", title: "Nü", date: "2019", category: "audio", mediaType: 'audio', blurb: "An audio project titled 'Nü'.", contentUrl: `projects/nu-audio.html` },
-                { id: "h-beat", title: "H-beat", date: "2019", category: "audio", mediaType: 'audio', blurb: "A beat created in 2019.", contentUrl: `projects/h-beat.html` },
-                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image', blurb: "Album cover illustration for Grord.", contentUrl: `projects/grord-album-cover.html` },
-                { id: "hierarchy-wheel", title: "Revamp of hierarchy wheel", date: "2019", category: "illustration", mediaType: 'image', blurb: "A redesign of a hierarchy wheel graphic.", contentUrl: `projects/hierarchy-wheel.html` },
-                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image', blurb: "A flyer design for faculty.", contentUrl: `projects/faculty-flyer.html` },
-                { id: "hi-hat-dough", title: "Hi Hat in Dough and tides not as so", date: "2025", category: "illustration", mediaType: 'image', blurb: "An illustrative piece with a unique title.", contentUrl: `projects/hi-hat-dough.html` },
+                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf' },
+                { id: "mac-video-essay", title: "MAC Video Essay", date: "Spring 2025", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "power-of-love", title: "Power of Love", date: "Spring 2025", category: "3d", mediaType: '3d-scan' },
+                { id: "interactive-sky", title: "Interactive Sky Animation", date: "Spring 2025", category: "interactive", mediaType: 'p5js' },
+                { id: "pixel-manta-rays", title: "Pixel Manta Rays", date: "Spring 2025", category: "interactive", mediaType: 'p5js' },
+                { id: "tech-cyclical", title: "technology is cyclical", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "spaced-out", title: "Spaced Out", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "parallax-city", title: "Parallax city scape", date: "Fall 2024", category: "interactive", mediaType: 'p5js' },
+                { id: "year-in-review", title: "A year in Review", date: "Spring 2024", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "bossa-nova-boy", title: "Bossa Nova Boy", date: "Spring 2024", category: "3d", mediaType: '3d-scan' },
+                { id: "liam-lars", title: "Liam and Lars Project", date: "Fall 2023", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "epmo-office", title: "EPMO OFFICE", date: "Fall 2022", category: "video", mediaType: 'video', youtubeId: 'uROSMdFQy4w' },
+                { id: "wusb-fm", title: "WUSB.FM", date: "Ongoing", category: "website", mediaType: 'website' },
+                { id: "li-history-journal", title: "LI History Journal", date: "Fall 2021", category: "website", mediaType: 'website' },
+                { id: "envirodanger", title: "Envirodanger Website", date: "2019-2025", category: "website", mediaType: 'website' },
+                { id: "remove-sunglasses", title: "Remove the Sunglasses", date: "2020", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "wall-of-painting", title: "Wall of Painting Bumper", date: "2022", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "pikachu-overlay", title: "Pikachu overlay", date: "2022", category: "video", mediaType: 'video', youtubeId: null },
+                { id: "twow-fm", title: "Twow FM", date: "2018", category: "audio", mediaType: 'audio' },
+                { id: "groundhogs-day", title: "Groundhogs Day", date: "2022", category: "audio", mediaType: 'audio' },
+                { id: "nu-audio", title: "Nü", date: "2019", category: "audio", mediaType: 'audio' },
+                { id: "h-beat", title: "H-beat", date: "2019", category: "audio", mediaType: 'audio' },
+                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image' },
+                { id: "hierarchy-wheel", title: "Revamp of hierarchy wheel", date: "2019", category: "illustration", mediaType: 'image' },
+                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image' },
+                { id: "hi-hat-dough", title: "Hi Hat in Dough and tides not as so", date: "2025", category: "illustration", mediaType: 'image' },
             ];
 
             const placeholders = {
@@ -321,13 +332,20 @@
                     : projects.filter(p => p.category === filter);
 
                 filteredProjects.forEach(project => {
-                    const placeholderSvg = placeholders[project.category] || placeholders['illustration'];
+                    let tileContent;
+                    if (project.category === 'video' && project.youtubeId) {
+                        tileContent = `<img src="https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg" alt="${project.title}" class="w-full h-full object-cover">`;
+                    } else {
+                        const placeholderSvg = placeholders[project.category] || placeholders['illustration'];
+                        tileContent = `<div class="w-full h-full flex items-center justify-center p-4">${placeholderSvg}</div>`;
+                    }
+
                     const card = document.createElement('div');
                     card.className = 'project-card rounded-lg overflow-hidden cursor-pointer';
                     card.dataset.id = project.id;
                     card.innerHTML = `
-                        <div class="aspect-w-16 aspect-h-9 relative">
-                            <div class="w-full h-full">${placeholderSvg}</div>
+                        <div class="aspect-16-9">
+                            ${tileContent}
                             <div class="info-overlay absolute inset-0 bg-black/70 p-4 flex flex-col justify-end text-white">
                                 <h3 class="text-xl font-bold">${project.title}</h3>
                                 <p class="font-mono text-sm">${project.date} &mdash; ${project.mediaType}</p>
@@ -350,22 +368,35 @@
                 modalTitle.textContent = project.title;
                 modalDate.textContent = project.date;
                 modalMedium.textContent = project.mediaType;
-                modalBlurb.textContent = project.blurb;
-                
-                // Fetch and load content from external file
+
+                // Set a loading state
+                modalBodyContent.innerHTML = `<p class="text-center">Loading project...</p>`;
+                modalBlurb.innerHTML = '';
+
                 try {
-                    const response = await fetch(project.contentUrl);
-                    if (!response.ok) throw new Error('Content not found');
+                    // This is the correct method for your GitHub pages site.
+                    // It will fail in the preview environment but work on a live server.
+                    const response = await fetch(`projects/${projectId}.html`);
+                    if (!response.ok) throw new Error('Network response was not ok.');
+                    
                     const contentHtml = await response.text();
-                    modalBodyContent.innerHTML = contentHtml;
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(contentHtml, 'text/html');
+                    
+                    const contentNode = doc.querySelector('.project-content');
+                    const blurbNode = doc.querySelector('.project-blurb');
+
+                    modalBodyContent.innerHTML = contentNode ? contentNode.innerHTML : '';
+                    modalBlurb.innerHTML = blurbNode ? blurbNode.innerHTML : 'No description available.';
+
                 } catch (error) {
-                    modalBodyContent.innerHTML = `<p class="text-center text-red-500">Error: Could not load project content.</p>`;
-                    console.error('Error fetching project content:', error);
+                    console.error(`Error fetching project content for '${projectId}':`, error);
+                    modalBodyContent.innerHTML = `<p class="text-center text-red-500">Could not load project content.</p>`;
+                    modalBlurb.innerHTML = `This content is loaded from a separate file. The request failed, which is expected in some local preview environments but indicates an issue (like a typo in the file name or a server problem) on a live site.`;
                 }
 
                 modalContainer.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
-                // Delay adding 'open' to trigger transition
                 setTimeout(() => modalContainer.classList.add('open'), 10);
             }
 
@@ -431,4 +462,3 @@
     </script>
 </body>
 </html>
-
