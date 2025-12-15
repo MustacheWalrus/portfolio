@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ocean Sketch Thumbnail</title>
+    
+    <!-- p5.js for the main animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #000;
+        font-family: 'Inter', sans-serif;
+      }
+      canvas {
+        display: block;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // =================================================================
+      //  SIMPLIFIED THUMBNAIL SCRIPT
+      // =================================================================
+
+      let time = 0;
+      let fish = [];
+      let waterColor1, waterColor2, sandColor;
+
+      // --- Fish class (manta rays) ---
+      class Fish {
+          constructor() {
+              this.x = random(width);
+              this.y = random(height);
+              this.noiseOffsetX = random(1000);
+              this.noiseOffsetY = random(1000);
+              this.size = random(40, 60);
+              this.vx = 0;
+              this.vy = 0;
+              this.flapOffset = random(TWO_PI);
+
+              // pixel pattern for manta ray
+              this.basePattern = [
+                  [0,0,1,0,0,0,1,0,0],
+                  [0,1,1,1,1,1,1,1,0],
+                  [1,1,1,1,1,1,1,1,1],
+                  [0,1,1,1,1,1,1,1,0],
+                  [0,0,1,1,1,1,1,0,0],
+                  [0,0,0,0,1,0,0,0,0],
+                  [0,0,0,0,1,0,0,0,0],
+                  [0,0,0,0,1,0,0,0,0],
+              ];
+              this.patternCenterX = floor(this.basePattern[0].length / 2);
+              this.patternCenterY = floor(this.basePattern.length / 2);
+          }
+          rotatePattern(angle) {
+              const rotated = new Set();
+              const cosA = cos(angle), sinA = sin(angle);
+              for (let y=0; y<this.basePattern.length; y++) {
+                  for (let x=0; x<this.basePattern[y].length; x++) {
+                      if (this.basePattern[y][x]===1) {
+                          const relX = x - this.patternCenterX;
+                          const relY = y - this.patternCenterY;
+                          const rotX = round(relX*cosA - relY*sinA);
+                          const rotY = round(relX*sinA + relY*cosA);
+                          rotated.add(`${rotX},${rotY}`);
+                      }
+                  }
+              }
+              return Array.from(rotated).map(s => s.split(",").map(Number));
+          }
+          update() {
+              let angle = noise(this.noiseOffsetX + time*0.1, this.noiseOffsetY + time*0.1) * TWO_PI * 2;
+              const speed = map(this.size, 40, 60, 2.5, 1.5);
+              this.vx = cos(angle) * speed;
+              this.vy = sin(angle) * speed;
+              this.x += this.vx;
+              this.y += this.vy;
+              const pad = this.size*2;
+              if (this.x < -pad) this.x = width + pad;
+              if (this.x > width + pad) this.x = -pad;
+              if (this.y < -pad) this.y = height + pad;
+              if (this.y > height + pad) this.y = -pad;
+          }
+          display() {
+              noStroke();
+              const gridX = round(this.x/20)*20;
+              const gridY = round(this.y/20)*20;
+              const mag = sqrt(this.vx*this.vx + this.vy*this.vy);
+              if (mag===0) return;
+              const ux = this.vx/mag, uy = this.vy/mag;
+              const ang = atan2(this.vy,this.vx)+PI/2;
+              const coords = this.rotatePattern(ang);
+              const flap = sin(time*5 + this.flapOffset);
+              for (const c of coords) {
+                  let px = gridX + c[0]*20;
+                  let py = gridY + c[1]*20;
+                  let dp = (c[0]*20)*ux + (c[1]*20)*uy;
+                  let diff = map(dp, -100,100,-1,1,true);
+                  let noiseCol = noise(px*0.005,py*0.005,time*0.1);
+                  let baseC = lerpColor(waterColor1, waterColor2, noiseCol);
+                  let finalC;
+                  if (diff>0) {
+                      let dark = color(0,40,60,200);
+                      finalC = lerpColor(baseC, dark, diff * map(flap,-1,1,0.4,1));
+                  } else {
+                      let light = color(255,255,200,150);
+                      finalC = lerpColor(baseC, light, -diff*0.5);
+                      let turb = -diff * map(flap,-1,1,0,1)*6;
+                      px += random(-turb,turb);
+                      py += random(-turb,turb);
+                  }
+                  let d2 = sqrt((c[0]*20)**2 + (c[1]*20)**2);
+                  let darkF = map(d2,0,80,0.4,0,true);
+                  let cenC = lerpColor(finalC, color(0,40,60,200), darkF);
+                  fill(cenC);
+                  rect(round(px/20)*20,round(py/20)*20,20,20);
+              }
+          }
+      }
+
+      function setup() {
+          createCanvas(windowWidth, windowHeight);
+          noStroke();
+          waterColor1 = color(32,178,170,150);
+          waterColor2 = color(0,255,255,150);
+          sandColor   = color(194,178,128);
+          // Reduced number of fish for thumbnail performance
+          for (let i=0;i<5;i++) fish.push(new Fish());
+      };
+
+      function draw() {
+          background(sandColor);
+          // water base
+          for (let x=0;x<width; x+=20) {
+              for (let y=0;y<height; y+=20) {
+                  let wn = noise(x*0.005,y*0.005,time*0.1);
+                  fill(lerpColor(waterColor1, waterColor2, wn));
+                  rect(x,y,20,20);
+              }
+          }
+          // fish
+          fish.forEach(f => { f.update(); f.display(); });
+          // caustics & clouds
+          for (let x=0;x<width; x+=20) {
+              for (let y=0;y<height; y+=20) {
+                  let cn = noise(x*0.02+time*0.3, y*0.02+time*0.3);
+                  if (cn>0.65) { fill(255,255,200,cn*80); rect(x,y,20,20); }
+                  if (x%40===0 && y%40===0) {
+                      let cl = noise(x*0.001+time*0.02,y*0.002+time*0.02);
+                      if (cl>0.5) { fill(255,255,255,(cl-0.5)*60); rect(x,y,40,40); }
+                  }
+              }
+          }
+          
+          // --- Draw Overlay Text ---
+          textAlign(CENTER, CENTER);
+          fill(255, 255, 255, 200);
+          noStroke();
+          textSize(24);
+          textStyle(BOLD);
+          text("Click to Explore", width / 2, height / 2);
+
+          time += 0.02;
+      };
+
+      function windowResized() {
+          resizeCanvas(windowWidth, windowHeight);
+      };
+    </script>
+  </body>
+</html>

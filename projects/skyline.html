@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Flight</title>
+    <!-- Import p5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.min.js"></script>
+    <!-- Import League Gothic Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevents scrollbars */
+            background-color: #000;
+            font-family: 'League Gothic', sans-serif; /* Ensure font loads */
+        }
+        canvas {
+            display: block; /* Removes default inline spacing */
+        }
+    </style>
+</head>
+<body>
+    <main></main>
+
+    <script>
+        // Global variables
+        var s;
+        var sh;
+        
+        // Idle animation variables
+        // Start with a negative time so it triggers immediately on load
+        var lastInteractionTime = -20000; 
+        const IDLE_TIMEOUT = 15000; // 15 seconds in milliseconds
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+            s = new Buildings(); 
+            sh.x = width / 2;    
+            sh.y = height / 2;
+        }
+
+        function setup() {
+            let canvas = createCanvas(windowWidth, windowHeight);
+            canvas.position(0, 0);
+            canvas.style('z-index', '-1');
+            colorMode(HSB);
+            
+            sh = new Ship();
+            s = new Buildings();
+        }
+
+        function draw() {
+            background(270, 20, 60);
+            
+            // 1. Check for interaction
+            if (keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW) || keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW)) {
+                lastInteractionTime = millis();
+            }
+
+            // 2. Determine if we are in idle state
+            let isIdle = (millis() - lastInteractionTime) > IDLE_TIMEOUT;
+            
+            // 3. Pass idle state to move functions
+            s.display();
+            s.move(isIdle);
+            sh.display();
+            sh.move(isIdle);
+            
+            textAlign(CENTER, CENTER);
+            textFont('League Gothic');
+            fill(0, 0, 100);
+            textSize(30);
+            text('PRESS LEFT OR RIGHT ARROW KEYS', width/2, height/4);
+        }
+
+        // --- Buildings Class ---
+        class Buildings {
+            constructor() {
+                this.layers = 10;
+                this.city = []; 
+
+                for (let i = 0; i < this.layers; i++) {
+                    let layer = [];
+                    let h = 240 + i * 16;
+                    let sat = 4 * i;
+                    let b = 30 + 7 * i;
+                    let s = i;
+                    let num = 48 + 2 - i * 2;
+                    let bw = width / num;
+                    
+                    for (let j = 0; j < num + 1; j++) {
+                        let cityBlock = {
+                            x: bw / 2 + j * bw,
+                            y: (height / this.layers) * i,
+                            s: s,
+                            rh: height / this.layers + random(1, height / this.layers * 2),
+                            h: h,
+                            bw: bw,
+                            sat: sat,
+                            b: b
+                        };
+                        layer.push(cityBlock);
+                    }
+                    this.city.push(layer);
+                }
+            }
+
+            display() {
+                noFill();
+                for (let i = 0; i < this.layers; i++) {
+                    let num = 48 + 2 - i * 2;
+                    for (let j = 0; j < num + 1; j++) {
+                        let cityBlock = this.city[i][j];
+                        colorMode(HSB);
+                        strokeWeight(7);
+                        fill(cityBlock.h, cityBlock.sat, cityBlock.b);
+                        stroke(cityBlock.h, cityBlock.sat, cityBlock.b);
+                        rect(cityBlock.x - cityBlock.bw / 2, cityBlock.y - cityBlock.rh + height / this.layers, cityBlock.bw, cityBlock.rh);
+                    }
+                }
+            }
+
+            move(isIdle) {
+                for (let i = 0; i < this.layers; i++) {
+                    let num = 48 + 2 - i * 2;
+                    for (let j = 0; j < num + 1; j++) {
+                        let cityBlock = this.city[i][j];
+                        
+                        // If Left Key is pressed, move buildings right
+                        if (keyIsDown(LEFT_ARROW)) {
+                            cityBlock.x += cityBlock.s;
+                            if (cityBlock.x >= width + cityBlock.bw / 2) {
+                                cityBlock.x = -cityBlock.bw / 2;
+                            }
+                        } 
+                        // If Right Key is pressed OR we are in Idle mode, move buildings left (fly right)
+                        else if (keyIsDown(RIGHT_ARROW) || isIdle) {
+                            cityBlock.x -= cityBlock.s;
+                            if (cityBlock.x <= -cityBlock.bw / 2) {
+                                cityBlock.x = width + cityBlock.bw / 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- Ship Class ---
+        class Ship {
+            constructor() {
+                this.x = width / 2;
+                this.y = height / 2;
+                this.h = 330;
+                this.sat = 80;
+                this.b = 50;
+                this.a = 0;
+            }
+
+            display() {
+                angleMode(DEGREES);
+                noStroke();
+
+                push();
+                colorMode(HSB);
+                translate(this.x, this.y);
+                rotate(this.a);
+                
+                // Ship Body
+                fill(this.h, this.sat, this.b);
+                quad(0, 0, 10, 10, 0, -20, -10, 10);
+                
+                // Wings/Details
+                fill(this.h, this.sat, this.b + 20);
+                triangle(0, 0, 10, 10, 0, -20);
+                
+                fill(this.h, this.sat, this.b - 20);
+                triangle(0, 0, 10, 10, 0, -5);
+                
+                fill(this.h, this.sat, this.b + 20);
+                triangle(0, 0, -10, 10, 0, -5);
+                pop();
+            }
+
+            move(isIdle) {
+                if (isIdle) {
+                    this.a = 90; // Face right during idle animation
+                    return;
+                }
+
+                if (keyIsPressed) {
+                    if (keyCode == LEFT_ARROW) {
+                        this.a = 270;
+                    } else if (keyCode == RIGHT_ARROW) {
+                        this.a = 90;
+                    } else if (keyCode == UP_ARROW) {
+                        this.a = 0;
+                    } else if (keyCode == DOWN_ARROW) {
+                        this.a = 180;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
