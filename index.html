@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Mono:wght@400;500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* Define color variables for light and dark themes */
         :root {
@@ -146,6 +146,34 @@
             background: var(--primary-color);
         }
 
+        /* Styles for project content overlay */
+        .project-content a {
+            position: relative;
+            display: block;
+        }
+        .project-content .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            font-family: 'Inter', sans-serif;
+            z-index: 10;
+        }
+        .project-content a:hover .overlay {
+            opacity: 1;
+        }
+
     </style>
 </head>
 <body class="antialiased">
@@ -231,10 +259,10 @@
                  I am a creative developer and artist passionate about building unique digital experiences. My work spans across web development, interactive art, video production, and design. Let's create something amazing together.
              </p>
              <div class="flex justify-center items-center gap-6">
-                <a href="mailto:liam.yehudai@gmail.com" class="px-8 py-3 rounded-full text-white font-bold transition-transform duration-300 hover:scale-105" style="background-color: var(--primary-color);">
+                <a href="mailto:liam.yehudai@stonybrook.edu" class="px-8 py-3 rounded-full text-white font-bold transition-transform duration-300 hover:scale-105" style="background-color: var(--primary-color);">
                     Contact Me
                 </a>
-                <a href="#" class="px-8 py-3 rounded-full font-bold border-2 transition-transform duration-300 hover:scale-105" style="border-color: var(--secondary-color); color: var(--secondary-color);">
+                <a href="assets/Liam-Yehudai-CV.pdf" target="_blank" rel="noopener noreferrer" class="px-8 py-3 rounded-full font-bold border-2 transition-transform duration-300 hover:scale-105" style="border-color: var(--secondary-color); color: var(--secondary-color);">
                     Download CV
                 </a>
              </div>
@@ -274,21 +302,21 @@
 
             // --- DATA ---
             const projects = [
-                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf', thumbnailImageUrl: 'assets/thumbnails/TLLStyleGuide.png' },
+                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf', thumbnailImageUrl: 'assets/thumbnails/TLLStyleGuide.png', imageUrl: 'assets/images/TLLStyleGuide.png' },
                 { id: "mac-video-essay", title: "MAC Video Essay", date: "Spring 2025", category: "video", mediaType: 'video', youtubeId: 'OmYZTwA-nPw' },
-                { id: "power-of-love", title: "Power of Love", date: "Spring 2025", category: "3d", mediaType: '3d-scan', thumbnailImageUrl: 'assets/thumbnails/LOVE.png' },
+                { id: "power-of-love", title: "Power of Love", date: "Spring 2025", category: "3d", mediaType: '3d-scan', thumbnailImageUrl: 'assets/thumbnails/LOVE.gif', imageUrl: 'assets/images/LOVE.gif' },
                 { id: "interactive-sky", title: "Interactive Sky Animation", date: "Spring 2025", category: "interactive", mediaType: 'p5js', thumbnailUrl: 'projects/interactive-sky-thumb.html' },
                 { id: "pixel-manta-rays", title: "Pixel Manta Rays", date: "Spring 2025", category: "interactive", mediaType: 'p5js', thumbnailUrl: 'projects/ocean-sketch-thumb.html' },
                 { id: "tech-cyclical", title: "technology is cyclical", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId: 'bt-z-nS4R7g' },
                 { id: "spaced-out", title: "Spaced Out", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId:'iaWw4Xpy7aU' },
                 { id: "parallax-city", title: "Parallax city scape", date: "Fall 2024", category: "interactive", mediaType: 'p5js', thumbnailUrl: 'projects/skyline.html' },
                 { id: "year-in-review", title: "A year in Review", date: "Spring 2024", category: "video", mediaType: 'video', youtubeId: 'uZQr_79ujAU' },
-                { id: "bossa-nova-boy", title: "Bossa Nova Boy", date: "Spring 2024", category: "3d", mediaType: '3d-scan', thumbnailImageUrl: 'assets/thumbnails/LOFI.png' },
+                { id: "bossa-nova-boy", title: "Bossa Nova Boy", date: "Spring 2024", category: "3d", mediaType: '3d-scan', thumbnailImageUrl: 'assets/thumbnails/LOFI.png', imageUrl: 'assets/images/LOFI.png' },
                 // { id: "liam-lars", title: "Liam and Lars Project", date: "Fall 2023", category: "video", mediaType: 'video', youtubeId: null },
                 { id: "epmo-office", title: "EPMO OFFICE", date: "Fall 2022", category: "video", mediaType: 'video', youtubeId: 'uROSMdFQy4w' },
-                { id: "wusb-fm", title: "WUSB.FM", date: "Ongoing", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/WUSB.png' },
-                { id: "li-history-journal", title: "LI History Journal", date: "Fall 2021", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/Envirodangers.png'},
-                { id: "envirodanger", title: "Envirodanger Website", date: "2019-2025", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/LongIslandHistoryJournal.png' },
+                { id: "wusb-fm", title: "WUSB.FM", date: "Ongoing", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/WUSB.png', imageUrl: 'assets/images/WUSB.png' },
+                { id: "li-history-journal", title: "LI History Journal", date: "Fall 2021", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/Envirodangers.png', imageUrl: 'assets/images/Envirodangers.png'},
+                { id: "envirodanger", title: "Envirodanger Website", date: "2019-2025", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/LongIslandHistoryJournal.png', imageUrl: 'assets/images/LongIslandHistoryJournal.png' },
                 { id: "remove-sunglasses", title: "Remove the Sunglasses", date: "2020", category: "video", mediaType: 'video', youtubeId: 'TVTW61FRNuc' },
                 { id: "wall-of-painting", title: "Wall of Painting Bumper", date: "2022", category: "video", mediaType: 'video', youtubeId: 'ooMB7mttbEc' },
                 { id: "pikachu-overlay", title: "Pikachu overlay", date: "2022", category: "video", mediaType: 'video', youtubeId: '1BZJmysHj88' },
@@ -296,10 +324,10 @@
                 { id: "groundhogs-day", title: "Groundhogs Day", date: "2022", category: "audio", mediaType: 'audio', youtubeId: 'U7x193euDBk' },
                 { id: "nu-audio", title: "Nü", date: "2019", category: "audio", mediaType: 'audio', youtubeId: 'eR7JtdQkjM8' },
                 { id: "h-beat", title: "H-beat", date: "2019", category: "audio", mediaType: 'audio', youtubeId: 'AB340Xx71sI' },
-                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/grord-album-cover.jpg' },
-                { id: "blooms-taxonomy-wheel", title: "Revamp of Blooms Taxonomy Wheel", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: '/assets/thumbnails/BloomsTaxonomyWheel.png' },
-                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/FacultyCommonFlyer.png' },
-                { id: "hi-hat-dough", title: "Hi Hat in Dough and tides not as so", date: "2025", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/hi-hat-dough.jpg' },
+                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/grord-album-cover.jpg', imageUrl: 'assets/images/grord-album-cover.jpg' },
+                { id: "blooms-taxonomy-wheel", title: "Revamp of Blooms Taxonomy Wheel", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/BloomsTaxonomyWheel.png', imageUrl: 'assets/images/BloomsTaxonomyWheel.png' },
+                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/FacultyCommonFlyer.png', imageUrl: 'assets/images/FacultyCommonFlyer.png' },
+                { id: "hi-hat-dough", title: "Hi Hat in Dough and tides not as so", date: "2025", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/hi-hat-dough.jpg', imageUrl: 'assets/images/hi-hat-dough.jpg' },
             ];
 
             // Replaced Custom SVGs with FontAwesome Icons
@@ -405,7 +433,7 @@
                     if (project.thumbnailUrl) {
                          fallbackContent = `<div class="aspect-16-9"><iframe src="${project.thumbnailUrl}" class="w-full h-full" frameborder="0"></iframe></div>`;
                     } else if (project.thumbnailImageUrl) {
-                         fallbackContent = `<img src="${project.thumbnailImageUrl}" alt="${project.title}" class="w-full rounded-lg">`;
+                         fallbackContent = `<img src="${project.imageUrl || project.thumbnailImageUrl}" alt="${project.title}" class="w-full rounded-lg">`;
                     } else if (project.youtubeId) {
                         fallbackContent = `<div class="aspect-16-9"><iframe src="https://www.youtube.com/embed/${project.youtubeId}" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div>`;
                     } else {

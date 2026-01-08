@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gaussian Splat Viewer — Babylon.js (Button Height Fixed)</title>
+  <!-- Added FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; width: 100%; margin: 0; overflow: hidden; background: #0b0e11; font-family: 'Poppins', sans-serif; }
+    #renderCanvas { width: 100%; height: 100%; touch-action: none; display:block; }
+    #status { position: fixed; left: 12px; bottom: 12px; color: #e5e7eb; font: 14px/1.4 'Poppins', sans-serif; background: rgba(0,0,0,.55); padding: 10px 12px; border-radius: 10px; backdrop-filter: blur(6px); max-width: 60ch; box-sizing: border-box; }
+    #status b { color:#fff }
+    .ok { color:#86efac }
+    .warn { color:#fde68a }
+    .err { color:#fca5a5 }
+    button, .button-fixed { display:inline-flex; align-items:center; justify-content:center; padding:8px 12px; background:linear-gradient(180deg,#0b0e11,#151a21); border:1px solid #2a3240; border-radius:10px; color:#e5e7eb; cursor:pointer; font-size:14px; line-height:1; height:auto; box-sizing:border-box; }
+    button:hover, .button-fixed:hover { transform:translateY(-1px); box-shadow:0 2px 6px rgba(0,0,0,.4); }
+    #backButton { position: fixed; top: 12px; left: 12px; z-index: 100; }
+  </style>
+</head>
+<body>
+  <canvas id="renderCanvas"></canvas>
+  <div id="status" class="button-fixed">Loading…</div>
+  <div id="clickInstruction" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); pointer-events: none; transition: opacity 0.5s ease-in-out;">
+    Click to Explore
+  </div>
+  <div id="backButton">
+    <a href="index.html" class="button-fixed">
+      <i class="fas fa-arrow-left mr-2"></i> Back to Portfolio
+    </a>
+  </div>
+
+  <script>
+  // --- Resilient script loader ---
+  function loadScript(url){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=url;s.async=true;s.crossOrigin='anonymous';s.onload=()=>resolve(url);s.onerror=()=>reject(new Error('Failed '+url));document.head.appendChild(s);});}
+  async function loadAny(urls){let last;for(const u of urls){try{return await loadScript(u);}catch(e){last=e;}}throw last||new Error('All sources failed');}
+
+  const CDN={
+    babylon:[
+      'https://cdn.jsdelivr.net/npm/babylonjs@8.1.1/babylon.min.js',
+      'https://unpkg.com/babylonjs@8.1.1/babylon.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/babylonjs/8.1.1/babylon.min.js'
+    ],
+    loaders:[
+      'https://cdn.jsdelivr.net/npm/babylonjs-loaders@8.1.1/babylonjs.loaders.min.js',
+      'https://unpkg.com/babylonjs-loaders@8.1.1/babylonjs.loaders.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/babylonjs/8.1.1/babylonjs.loaders.min.js'
+    ],
+    splat:[
+      'https://cdn.jsdelivr.net/npm/@babylonjs/loaders@8.1.1/SPLAT/splatFileLoader.min.js',
+      'https://unpkg.com/@babylonjs/loaders@8.1.1/SPLAT/splatFileLoader.min.js'
+    ]
+  };
+
+  const statusEl=document.getElementById('status');
+  const clickInstructionEl = document.getElementById('clickInstruction');
+  function setStatus(msg){statusEl.innerHTML=msg;}
+
+  (async function main(){
+    try{
+      setStatus('<b>Loading engine…</b>');
+      await loadAny(CDN.babylon);
+      if(!window.BABYLON) throw new Error('BABYLON not loaded');
+      setStatus('<span class="ok">✓</span> Babylon loaded. <b>Loading loaders…</b>');
+      await loadAny(CDN.loaders);
+      try{await loadAny(CDN.splat);}catch(e){console.warn('SPLAT optional load failed.',e);}
+      setStatus('<span class="ok">✓</span> Loaders ready. <b>Booting scene…</b>');
+    }catch(e){console.error(e);setStatus('<span class="err">✗</span> Script load failed.');return;}
+
+    const canvas=document.getElementById('renderCanvas');
+
+    // --- PERFORMANCE FIX 1: Turn off expensive options ---
+    // preserveDrawingBuffer: false (Faster, but can't right-click save image)
+    // antialias: false (Splats are already fuzzy, AA is wasted processing)
+    // stencil: false (Not needed for this viewer)
+    const engine=new BABYLON.Engine(canvas, true, {
+        preserveDrawingBuffer: false, 
+        stencil: false, 
+        antialias: false,
+        powerPreference: "high-performance"
+    });
+
+    // --- PERFORMANCE FIX 2: Handle Retina Displays ---
+    // This caps the render resolution.
+    // 1.0 = Standard Density (Sharp enough, fast)
+    // 0.5 = Native Retina (Ultra sharp, VERY slow for Splats)
+    // 1.5 = Performance Mode (Slightly lower res, much faster)
+    engine.setHardwareScalingLevel(1.5); 
+
+    const scene=new BABYLON.Scene(engine);
+    scene.clearColor=new BABYLON.Color4(0.03,0.05,0.07,1);
+
+    // Camera Setup (Your 180 flip is included here)
+    const camera=new BABYLON.ArcRotateCamera('cam',Math.PI*0.25,Math.PI/2.3,0.25,BABYLON.Vector3.Zero(),scene);
+    camera.attachControl(canvas,true);
+    camera.lowerRadiusLimit=0.00005;camera.minZ=0.00005;camera.maxZ=100000;
+    camera.wheelPrecision=50; // Slower, smoother zoom
+    
+    new BABYLON.HemisphericLight('h',new BABYLON.Vector3(0,1,0),scene).intensity=0;
+
+    const splatUrl='/assets/LOVE.spz';
+    const root=new BABYLON.TransformNode('root',scene);
+    let result;
+    try{result=await BABYLON.SceneLoader.ImportMeshAsync('',splatUrl.substring(0,splatUrl.lastIndexOf('/')+1),splatUrl.substring(splatUrl.lastIndexOf('/')+1),scene);}catch(e){console.error(e);setStatus('<span class="err">✗</span> Failed to load SPZ');return;}
+
+    const meshes=(result&&result.meshes)||[];
+    let min=new BABYLON.Vector3(+Infinity,+Infinity,+Infinity),max=new BABYLON.Vector3(-Infinity,-Infinity,-Infinity);
+    for(const m of meshes){
+        // --- PERFORMANCE FIX 3: Freeze static meshes ---
+        m.freezeWorldMatrix(); 
+        if(m.getBoundingInfo){const bi=m.getBoundingInfo();min=BABYLON.Vector3.Minimize(min,bi.boundingBox.minimumWorld);max=BABYLON.Vector3.Maximize(max,bi.boundingBox.maximumWorld);}
+        m.parent=root;
+    }
+    const center=min.add(max).scale(0.5);root.position=center.scale(-1);root.rotation.x=Math.PI;
+
+    const bboxLen=max.subtract(min).length();
+    // Your closer zoom (0.008)
+    const ultraRadius=Math.max(0.00005,bboxLen*0.008);
+    camera.radius=ultraRadius;camera.target=BABYLON.Vector3.Zero();camera.beta=Math.PI/2.6;
+
+    setStatus('<span class="ok">✓</span> Loaded. Optimized for M4.');
+
+    // --- ANIMATION SETUP (Your optimized loop) ---
+    let isAnimating = true;
+    const fps = 60;
+    const origin = camera.alpha;
+    const rightVal = origin - (Math.PI / 6); 
+    const leftVal = origin + (Math.PI / 6);
+
+    const smoothEase = new BABYLON.SineEase();
+    smoothEase.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+
+    const makeAnim = (name) => new BABYLON.Animation(name, "alpha", fps, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+    const anim1 = makeAnim("leg1");
+    anim1.setKeys([{frame: 0, value: origin}, {frame: 60, value: rightVal}]);
+    anim1.setEasingFunction(smoothEase);
+
+    const anim2 = makeAnim("leg2");
+    anim2.setKeys([{frame: 0, value: rightVal}, {frame: 120, value: leftVal}]);
+    anim2.setEasingFunction(smoothEase);
+
+    const anim3 = makeAnim("leg3");
+    anim3.setKeys([{frame: 0, value: leftVal}, {frame: 60, value: origin}]);
+
+    const runLoop = () => {
+      if (!isAnimating) return;
+      scene.beginDirectAnimation(camera, [anim1], 0, 60, false, 1.0, () => {
+        if (!isAnimating) return;
+        scene.beginDirectAnimation(camera, [anim2], 0, 120, false, 1.0, () => {
+          if (!isAnimating) return;
+          scene.beginDirectAnimation(camera, [anim3], 0, 60, false, 1.0, () => {
+            if (isAnimating) runLoop();
+          });
+        });
+      });
+    };
+    runLoop();
+
+    // Stop animation on user interaction
+    scene.onPointerObservable.add((pointerInfo) => {
+        if (pointerInfo.type === BABYLON.PointerEventTypes.POINTERDOWN) {
+            if (isAnimating) {
+                isAnimating = false;
+                scene.stopAllAnimations();
+                if (clickInstructionEl) {
+                    clickInstructionEl.style.opacity = '0';
+                    setTimeout(() => clickInstructionEl.style.display = 'none', 500); // Hide after fade
+                }
+            }
+        }
+    });
+
+    engine.runRenderLoop(()=>scene.render());
+    window.addEventListener('resize',()=>engine.resize());
+  })();
+  </script>
+</body>
+</html>

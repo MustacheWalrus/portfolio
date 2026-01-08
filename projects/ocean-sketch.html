@@ -13,16 +13,11 @@
 
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-      body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: 'Inter', sans-serif; }
-      .project-content { width: 100%; aspect-ratio: 16 / 9; position: relative; background-color: #000; overflow: hidden; border-radius: 0.5rem; }
-      #defaultCanvas0 { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; z-index: 1; }
+      html, body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: 'Inter', sans-serif; width: 100%; height: 100%; }
+      canvas { display: block; }
     </style>
   </head>
   <body>
-    <div class="project-content">
-        <!-- p5.js canvas will be placed here -->
-    </div>
-
     <script>
       // =================================================================
       //  OCEAN ANIMATION SCRIPT
@@ -127,8 +122,7 @@
           }
 
           p.setup = () => {
-              let container = document.querySelector('.project-content');
-              p.createCanvas(container.clientWidth, container.clientHeight).parent(container);
+              p.createCanvas(p.windowWidth, p.windowHeight);
               p.noStroke();
               
               waterColor1 = p.color(32,178,170,150);
@@ -166,8 +160,7 @@
           };
 
           p.windowResized = () => {
-              let container = document.querySelector('.project-content');
-              p.resizeCanvas(container.clientWidth, container.clientHeight);
+              p.resizeCanvas(p.windowWidth, p.windowHeight);
           };
       };
 
