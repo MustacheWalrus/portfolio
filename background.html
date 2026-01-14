@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isometric Cube Pattern</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            pointer-events: none; /* Let clicks pass through to canvas generally */
+            user-select: none;
+        }
+        .instruction {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .sub-instruction {
+            color: #666;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <div class="instruction">Isometric Pattern Generator</div>
+        <div class="sub-instruction">Click to change palette • Move mouse to ripple</div>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let cubes = [];
+        
+        // Configuration
+        const config = {
+            cubeSize: 35, // Length of one edge
+            padding: 0,
+            waveSpeed: 0.05,
+            waveFrequency: 0.05,
+            waveAmplitude: 10
+        };
+
+        // State
+        let time = 0;
+        let mouse = { x: -1000, y: -1000 };
+        let targetPalette = [];
+        let currentPalette = [];
+        
+        // Predefined beautiful palettes
+        const palettes = [
+            // Retro Muted
+            ['#E63946', '#F1FAEE', '#A8DADC', '#457B9D', '#1D3557'],
+            // Sunset
+            ['#264653', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51'],
+            // Berry
+            ['#003049', '#d62828', '#f77f00', '#fcbf49', '#eae2b7'],
+            // Forest
+            ['#606c38', '#283618', '#fefae0', '#dda15e', '#bc6c25'],
+            // Ocean
+            ['#03045e', '#0077b6', '#00b4d8', '#90e0ef', '#caf0f8'],
+             // Bauhas-ish
+            ['#1c1c1c', '#f0f0f0', '#d4af37', '#a02020', '#204060']
+        ];
+
+        function getRandomPalette() {
+            return palettes[Math.floor(Math.random() * palettes.length)];
+        }
+
+        // Initialize palette
+        targetPalette = getRandomPalette();
+        currentPalette = [...targetPalette];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initCubes();
+        }
+
+        class Cube {
+            constructor(x, y, gridX, gridY) {
+                this.x = x;
+                this.y = y;
+                this.gridX = gridX;
+                this.gridY = gridY;
+                this.baseY = y;
+                this.offset = 0;
+                
+                // Assign random colors from the palette for faces
+                this.colorIndices = [
+                    Math.floor(Math.random() * 5),
+                    Math.floor(Math.random() * 5),
+                    Math.floor(Math.random() * 5)
+                ];
+                
+                // Color variation intensity (0-1) for shading
+                this.topShade = 1.2;    // Lighter
+                this.leftShade = 1.0;   // Normal
+                this.rightShade = 0.8;  // Darker
+            }
+
+            update() {
+                // Calculate distance from mouse for wave effect
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const maxDist = 300;
+
+                let wave = 0;
+                if (dist < maxDist) {
+                    const force = (maxDist - dist) / maxDist;
+                    // Sine wave based on distance creates ripple
+                    wave = Math.sin(dist * 0.05 - time * 5) * force * config.waveAmplitude * 2;
+                }
+
+                // Gentle ambient wave
+                const ambient = Math.sin(this.gridX * 0.2 + this.gridY * 0.2 + time) * 5;
+
+                this.offset = wave + ambient;
+            }
+
+            draw() {
+                const size = config.cubeSize;
+                // Isometric math constants
+                const angle30 = Math.PI / 6;
+                const dx = size * Math.cos(angle30);
+                const dy = size * Math.sin(angle30);
+
+                const drawX = this.x;
+                const drawY = this.baseY - this.offset;
+
+                // Helper to get color
+                const getColor = (index, shadeMult) => {
+                    const hex = currentPalette[index % currentPalette.length];
+                    return adjustBrightness(hex, shadeMult);
+                };
+
+                ctx.lineWidth = 1;
+                ctx.lineJoin = 'round';
+
+                // Top Face
+                ctx.beginPath();
+                ctx.moveTo(drawX, drawY - size);
+                ctx.lineTo(drawX + dx, drawY - dy);
+                ctx.lineTo(drawX, drawY);
+                ctx.lineTo(drawX - dx, drawY - dy);
+                ctx.closePath();
+                ctx.fillStyle = getColor(this.colorIndices[0], this.topShade);
+                ctx.fill();
+                // ctx.stroke(); // Optional outline
+
+                // Right Face
+                ctx.beginPath();
+                ctx.moveTo(drawX, drawY);
+                ctx.lineTo(drawX + dx, drawY - dy);
+                ctx.lineTo(drawX + dx, drawY - dy + size);
+                ctx.lineTo(drawX, drawY + size);
+                ctx.closePath();
+                ctx.fillStyle = getColor(this.colorIndices[1], this.rightShade);
+                ctx.fill();
+
+                // Left Face
+                ctx.beginPath();
+                ctx.moveTo(drawX, drawY);
+                ctx.lineTo(drawX - dx, drawY - dy);
+                ctx.lineTo(drawX - dx, drawY - dy + size);
+                ctx.lineTo(drawX, drawY + size);
+                ctx.closePath();
+                ctx.fillStyle = getColor(this.colorIndices[2], this.leftShade);
+                ctx.fill();
+            }
+        }
+
+        // Helper to darken/lighten hex color
+        function adjustBrightness(hex, factor) {
+            // Remove hash
+            hex = hex.replace('#', '');
+            
+            let r = parseInt(hex.substring(0, 2), 16);
+            let g = parseInt(hex.substring(2, 4), 16);
+            let b = parseInt(hex.substring(4, 6), 16);
+
+            r = Math.min(255, Math.max(0, r * factor));
+            g = Math.min(255, Math.max(0, g * factor));
+            b = Math.min(255, Math.max(0, b * factor));
+
+            const toHex = (c) => {
+                const h = Math.round(c).toString(16);
+                return h.length === 1 ? '0' + h : h;
+            };
+
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+        
+        // Helper to lerp colors for smooth transitions
+        function lerpColor(a, b, amount) {
+            const ah = a.replace('#', ''), bh = b.replace('#', '');
+            const ar = parseInt(ah.substring(0,2), 16), ag = parseInt(ah.substring(2,4), 16), ab = parseInt(ah.substring(4,6), 16);
+            const br = parseInt(bh.substring(0,2), 16), bg = parseInt(bh.substring(2,4), 16), bb = parseInt(bh.substring(4,6), 16);
+            const rr = ar + amount * (br - ar);
+            const rg = ag + amount * (bg - ag);
+            const rb = ab + amount * (bb - ab);
+            return '#' + ((1 << 24) + (Math.round(rr) << 16) + (Math.round(rg) << 8) + Math.round(rb)).toString(16).slice(1);
+        }
+
+        function initCubes() {
+            cubes = [];
+            const size = config.cubeSize;
+            const dx = size * Math.cos(Math.PI / 6); // half width
+            const dy = size * Math.sin(Math.PI / 6); // half height of top diamond
+            
+            // Calculate grid dimensions to cover screen + buffer
+            // Horizontal spacing is 2 * dx
+            // Vertical spacing is size + dy (since they nest)
+            
+            const cols = Math.ceil(width / (dx * 2)) + 2;
+            const rows = Math.ceil(height / (size + dy)) + 4; // Extra rows for wave height buffer
+
+            for (let i = -2; i < rows; i++) {
+                for (let j = -2; j < cols; j++) {
+                    let x = j * dx * 2;
+                    let y = i * (size + dy);
+
+                    // Offset odd rows
+                    if (i % 2 !== 0) {
+                        x += dx;
+                    }
+
+                    // Adjust y to center vertically a bit better regarding the staggering
+                    y -= (size + dy); 
+
+                    cubes.push(new Cube(x, y, j, i));
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Update time
+            time += config.waveSpeed;
+
+            // Smoothly transition palette
+            for(let i=0; i<targetPalette.length; i++) {
+                if (currentPalette[i] !== targetPalette[i]) {
+                    currentPalette[i] = lerpColor(currentPalette[i], targetPalette[i], 0.05);
+                }
+            }
+            // Fill background with darkest color of palette
+            ctx.fillStyle = adjustBrightness(currentPalette[4], 0.2);
+            ctx.fillRect(0, 0, width, height);
+
+            cubes.forEach(cube => {
+                cube.update();
+                cube.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Event Listeners
+        window.addEventListener('resize', resize);
+        
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('click', () => {
+            targetPalette = getRandomPalette();
+            // Optional: Reshuffle cube color indices slightly on click for variety?
+            // cubes.forEach(c => c.colorIndices = [Math.floor(Math.random()*5), Math.floor(Math.random()*5), Math.floor(Math.random()*5)]);
+        });
+
+        // Start
+        resize();
+        animate();
+
+    </script>
+</body>
+</html>
