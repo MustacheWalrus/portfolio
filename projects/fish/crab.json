@@ -1,0 +1,54 @@
+{
+  "name": "Crab",
+  "type": "Crab",
+  "density": 0.00000445,
+  "size": { "min": 10, "max": 10 },
+  "movement": {
+    "speed": 1.2,
+    "turnRate": { "min": -0.01, "max": 0.01 },
+    "wiggleMag": 0.1745,
+    "wiggleSpeed": 15
+  },
+  "basePattern": [
+    [1, 1, 0, 0, 0, 1, 1],
+    [1, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1],
+    [0, 1, 1, 1, 1, 1, 0],
+    [1, 0, 1, 0, 1, 0, 1]
+  ],
+  "palette": {
+    "olive": [107, 142, 35],
+    "paleSand": [245, 222, 179],
+    "cyan": [0, 255, 255],
+    "purple": [147, 112, 219],
+    "deepPurple": [75, 0, 130],
+    "indigo": [75, 0, 130],
+    "pinkRed": [255, 20, 147],
+    "emerald": [80, 200, 120],
+    "midnightBlue": [25, 25, 112],
+    "cream": [255, 253, 208],
+    "pink": [255, 192, 203],
+    "red": [220, 40, 40],
+    "orange": [255, 140, 0],
+    "white": [240, 240, 245],
+    "yellow": [255, 220, 50],
+    "brown": [120, 80, 40]
+  },
+  "varieties": [
+    { "name": "Blue Crab", "type": "bi-color", "colors": ["olive", "cyan"], "rarity": 1 },
+    { "name": "Ghost Crab", "type": "solid", "colors": ["paleSand"], "rarity": 1 },
+    { "name": "Red Rock", "type": "solid", "colors": ["red"], "rarity": 3 },
+    { "name": "Sally Lightfoot", "type": "mottled", "colors": ["red", "orange", "cyan"], "rarity": 5 },
+    { "name": "Halloween Moon", "type": "halloween", "colors": ["purple", "orange", "white"], "rarity": 11 },
+    { "name": "Vampire", "type": "vampire", "colors": ["deepPurple", "yellow"], "rarity": 13 },
+    { "name": "Fiddler", "type": "bi-color", "colors": ["brown", "cream"], "rarity": 3 },
+    { "name": "Rainbow", "type": "rainbow", "colors": ["indigo", "red", "cream"], "rarity": 19 },
+    { "name": "Strawberry", "type": "spotted", "colors": ["pinkRed", "white"], "rarity": 7 },
+    { "name": "Yeti", "type": "solid", "colors": ["white"], "rarity": 23 },
+    { "name": "Emerald", "type": "solid", "colors": ["emerald"], "rarity": 7 },
+    { "name": "Pom-Pom", "type": "pom-pom", "colors": ["orange", "white"], "rarity": 17 },
+    { "name": "Coconut", "type": "solid", "colors": ["midnightBlue"], "rarity": 29 },
+    { "name": "Flower", "type": "mottled", "colors": ["olive", "brown", "cyan"], "rarity": 5 },
+    { "name": "Candy", "type": "striped", "colors": ["white", "pinkRed"], "rarity": 11 }
+  ]
+}

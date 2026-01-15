@@ -1,0 +1,35 @@
+{
+  "name": "Eel",
+  "type": "Eel",
+  "density": 0.00000117,
+  "size": { "min": 10, "max": 10 },
+  "movement": {
+    "speed": 4.0,
+    "turnChance": 0.03,
+    "turnAngle": 0.4
+  },
+  "animation": {
+    "length": 15,
+    "spacing": 8,
+    "slitherSpeed": 10,
+    "slitherAmplitude": 12
+  },
+  "palette": {
+    "purple": [138, 43, 226],
+    "darkBrown": [50, 30, 20],
+    "yellowMucus": [200, 220, 50, 100],
+    "electricBlue": [0, 100, 255],
+    "brightYellow": [255, 255, 0],
+    "cream": [253, 253, 240],
+    "black": [30, 30, 30],
+    "zebraWhite": [240, 240, 240]
+  },
+  "varieties": [
+    { "name": "Golden Dwarf Moray", "type": "solid", "colors": ["brightYellow"], "rarity": 1 },
+    { "name": "Green Moray", "type": "overlay", "colors": ["darkBrown", "yellowMucus"], "rarity": 3 },
+    { "name": "Zebra Moray", "type": "stripes", "colors": ["darkBrown", "zebraWhite"], "rarity": 5 },
+    { "name": "Blue Ribbon Eel", "type": "dorsalFin", "colors": ["electricBlue", "brightYellow"], "rarity": 11 },
+    { "name": "Snowflake Moray", "type": "splotches", "colors": ["cream", "black"], "rarity": 7 },
+    { "name": "Purple Eel", "type": "solid", "colors": ["purple"], "rarity": 101 }
+  ]
+}

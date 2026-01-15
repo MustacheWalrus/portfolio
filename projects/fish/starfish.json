@@ -1,0 +1,32 @@
+{
+  "name": "Starfish",
+  "type": "Starfish",
+  "density": 0.00000745,
+  "size": { "min": 10, "max": 10 },
+  "movement": {
+    "rotationSpeed": { "min": -0.005, "max": 0.005 },
+    "driftSpeed": { "min": -0.05, "max": 0.05 }
+  },
+  "basePattern": [
+    [0, 0, 1, 0, 0],
+    [1, 1, 1, 1, 1],
+    [0, 1, 1, 1, 0],
+    [0, 1, 0, 1, 0],
+    [1, 0, 0, 0, 1]
+  ],
+  "palette": {
+    "purple": [138, 43, 226],
+    "orange": [255, 140, 0],
+    "royalBlue": [65, 105, 225],
+    "cream": [255, 253, 208],
+    "brown": [120, 80, 40],
+    "red": [220, 40, 40]
+  },
+  "varieties": [
+    { "name": "Ochre (Purple)", "type": "solid", "colors": ["purple"], "rarity": 1 },
+    { "name": "Ochre (Orange)", "type": "solid", "colors": ["orange"], "rarity": 1 },
+    { "name": "Red Star", "type": "solid", "colors": ["red"], "rarity": 3 },
+    { "name": "Blue Linckia", "type": "solid", "colors": ["royalBlue"], "rarity": 7 },
+    { "name": "Chocolate Chip", "type": "dotted", "colors": ["cream", "brown"], "rarity": 5 }
+  ]
+}

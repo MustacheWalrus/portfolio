@@ -1,0 +1,45 @@
+{
+  "name": "Jellyfish",
+  "type": "Jellyfish",
+  "density": 0.00001305,
+  "size": { "min": 10, "max": 10 },
+  "opacity": 60,
+  "movement": {
+    "pulseInterval": { "min": 100, "max": 180 }
+  },
+  "basePattern": [
+    [0, 1, 1, 1, 0],
+    [1, 1, 1, 1, 1],
+    [1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1],
+    [0, 0, 1, 0, 0]
+  ],
+  "palette": {
+    "white": [240, 240, 245],
+    "lightBlue": [173, 216, 230],
+    "orange": [255, 140, 0],
+    "gold": [255, 215, 0],
+    "purple": [138, 43, 226],
+    "neonBlue": [0, 255, 255],
+    "cream": [255, 253, 208],
+    "neonPink": [255, 20, 147],
+    "deepPurple": [75, 0, 130],
+    "maroon": [128, 0, 0],
+    "red": [220, 40, 40],
+    "rust": [183, 65, 14],
+    "turquoise": [64, 224, 208],
+    "neonGreen": [57, 255, 20]
+  },
+  "varieties": [
+    { "name": "Moon Jelly", "type": "translucent", "colors": ["white", "lightBlue"], "rarity": 1 },
+    { "name": "Sea Nettle", "type": "solid", "colors": ["orange", "gold"], "rarity": 3 },
+    { "name": "Bioluminescent", "type": "glowing", "colors": ["purple", "neonBlue"], "rarity": 11 },
+    { "name": "Fried Egg", "type": "center_spot", "colors": ["cream", "orange"], "rarity": 5 },
+    { "name": "Flower Hat", "type": "striped", "colors": ["lightBlue", "neonPink"], "rarity": 13 },
+    { "name": "Purple-Striped", "type": "striped", "colors": ["white", "deepPurple"], "rarity": 7 },
+    { "name": "Atolla", "type": "solid", "colors": ["maroon", "red"], "rarity": 19 },
+    { "name": "Cannonball", "type": "rim", "colors": ["lightBlue", "rust"], "rarity": 5 },
+    { "name": "Blue Button", "type": "center_spot", "colors": ["gold", "turquoise"], "rarity": 17 },
+    { "name": "Crystal", "type": "rim", "colors": ["white", "neonGreen"], "rarity": 23 }
+  ]
+}

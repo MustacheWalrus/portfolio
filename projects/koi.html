@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ambient Ocean with Varied Koi and Rare Lobsters</title>
+    
+    <!-- p5.js for the main animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+    <style>
+      /* Simple reset to ensure the canvas fills the screen */
+      html, body { 
+        margin: 0; 
+        padding: 0; 
+        overflow: hidden; 
+        background-color: #000; 
+        width: 100%; 
+        height: 100%; 
+        font-family: sans-serif;
+      }
+      canvas { display: block; }
+
+      /* UI Controls Overlay */
+      #controls {
+        display: none; /* Panel hidden as requested */
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 100;
+        background: rgba(0, 40, 60, 0.7); /* Dark teal semi-transparent background */
+        padding: 15px;
+        border-radius: 12px;
+        color: white;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        width: 250px;
+      }
+      
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      input[type=range] {
+        width: 100%;
+        cursor: pointer;
+        accent-color: #00d2ff;
+      }
+      
+      .instruction {
+        font-size: 0.75rem;
+        color: #ccc;
+        margin-top: 5px;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <!-- UI Controls (Hidden via CSS) -->
+    <div id="controls">
+      <label for="opacitySlider">
+        Fish Depth
+        <span id="opacityValue">75</span>
+      </label>
+      <input type="range" id="opacitySlider" min="50" max="255" value="75">
+      <div class="instruction">Refresh page to spawn new random varieties.</div>
+    </div>
+
+    <script>
+      // =================================================================
+      //  OCEAN ANIMATION SCRIPT
+      // =================================================================
+      let p5_instance;
+
+      const sketch = (p) => {
+          let time = 0;
+          let fish = [];
+          let lobsters = []; 
+          
+          let waterColor1, waterColor2, sandColor;
+          // Global palette references
+          let cWhite, cRed, cBlack, cGold, cYellow, cBlue, cBrown, cOrange;
+          // New Lobster Colors
+          let cOlive, cDarkGreen, cRoyalBlue, cPink, cLightBlue, cPurple, cGrey, cCream;
+          
+          let fishOpacity = 75;
+          let sliderElem;
+          let valueElem;
+
+          // --- Koi Variety Definitions ---
+          const KOI_VARIETIES = [
+            { name: 'Kohaku', type: 'pattern', colors: ['white', 'red'] },
+            { name: 'Tancho', type: 'tancho', colors: ['white', 'red'] },
+            { name: 'Sanke', type: 'tricolor', colors: ['white', 'red', 'black'] },
+            { name: 'Showa', type: 'tricolor', colors: ['black', 'red', 'white'] },
+            { name: 'Ogon', type: 'solid', colors: ['gold'] },
+            { name: 'Platinum', type: 'solid', colors: ['white'] },
+            { name: 'Orenji', type: 'solid', colors: ['orange'] },
+            { name: 'Chagoi', type: 'solid', colors: ['brown'] },
+            { name: 'Bekko', type: 'pattern', colors: ['white', 'black'] }, 
+            { name: 'Ki Bekko', type: 'pattern', colors: ['yellow', 'black'] },
+            { name: 'Kumonryu', type: 'pattern', colors: ['black', 'white'] },
+            { name: 'Asagi', type: 'asagi', colors: ['blue', 'red'] } 
+          ];
+
+          // --- Lobster Variety Definitions ---
+          const LOBSTER_VARIETIES = [
+             { name: 'Wild Type', type: 'mottled', colors: ['olive', 'darkGreen', 'brown'] }, // Common
+             { name: 'Blue', type: 'solid', colors: ['royalBlue'] }, // Rare
+             { name: 'Red', type: 'solid', colors: ['red'] }, // "Cooked" Look
+             { name: 'Calico', type: 'spotted', colors: ['yellow', 'orange'] }, 
+             { name: 'Split', type: 'split', colors: ['brown', 'orange'] }, // Half/Half
+             { name: 'Albino', type: 'solid', colors: ['cream'] },
+             { name: 'Cotton Candy', type: 'pastel', colors: ['pink', 'lightBlue'] }, 
+             { name: 'Purple', type: 'solid', colors: ['purple'] },
+             { name: 'Ghost', type: 'solid', colors: ['grey'] },
+             { name: 'Leopard', type: 'spotted', colors: ['yellow', 'brown'] }
+          ];
+
+          // --- Lobster Class ---
+          class Lobster {
+              constructor() {
+                  this.x = p.random(p.width);
+                  this.y = p.random(p.height);
+                  this.noiseOffsetX = p.random(1000);
+                  this.noiseOffsetY = p.random(1000);
+                  
+                  // Pick a random variety
+                  this.variety = p.random(LOBSTER_VARIETIES);
+                  this.patternSeed = p.random(1000);
+
+                  this.speed = 0.6;
+                  this.vx = 0;
+                  this.vy = 0;
+                  
+                  // Pattern (Head is top, Index 0)
+                  // 5 pixels wide
+                  this.basePattern = [
+                    [1, 0, 0, 0, 1], // Claw tips
+                    [1, 1, 0, 1, 1], // Claws
+                    [0, 1, 1, 1, 0], // Head (v=2)
+                    [0, 1, 1, 1, 0], // Body
+                    [0, 1, 1, 1, 0], // Body
+                    [0, 0, 1, 0, 0], // Tail connection
+                    [0, 1, 1, 1, 0], // Tail fan
+                  ];
+                  
+                  this.patternCenterX = 2;
+                  this.patternCenterY = 3;
+                  this.pixelScale = 10;
+              }
+
+              getPixelColor(u, v) {
+                const type = this.variety.type;
+                const cols = this.variety.colors.map(n => getColorByName(n));
+
+                if (type === 'solid') return cols[0];
+
+                if (type === 'split') {
+                    // Split down the middle (u=2 is the spine)
+                    if (u < 2) return cols[0];
+                    if (u > 2) return cols[1];
+                    return cols[0]; // Spine color
+                }
+
+                // Noise for organic patterns
+                let n = p.noise(u * 0.8 + this.patternSeed, v * 0.8 + this.patternSeed);
+
+                if (type === 'mottled') {
+                    if (n < 0.4) return cols[0]; // Olive
+                    if (n < 0.7) return cols[1]; // Dark Green
+                    return cols[2];              // Brown spots
+                }
+
+                if (type === 'spotted') {
+                    // Base color with spots
+                    return n > 0.6 ? cols[1] : cols[0];
+                }
+
+                if (type === 'pastel') {
+                    // Cotton Candy mix
+                    return n > 0.5 ? cols[1] : cols[0];
+                }
+
+                return cols[0];
+              }
+
+              rotatePattern(angle) {
+                  const rotatedMap = new Map(); 
+                  const cosA = p.cos(angle), sinA = p.sin(angle);
+                  for (let v=0; v<this.basePattern.length; v++) { 
+                      for (let u=0; u<this.basePattern[v].length; u++) { 
+                          if (this.basePattern[v][u]===1) {
+                              const relX = u - this.patternCenterX;
+                              const relY = v - this.patternCenterY;
+                              const rotX = p.round(relX*cosA - relY*sinA);
+                              const rotY = p.round(relX*sinA + relY*cosA);
+                              // IMPORTANT: We must store u,v for coloring logic
+                              const key = `${rotX},${rotY}`;
+                              rotatedMap.set(key, { x: rotX, y: rotY, u: u, v: v });
+                          }
+                      }
+                  }
+                  return Array.from(rotatedMap.values());
+              }
+
+              update() {
+                  let angle = p.noise(this.noiseOffsetX + time*0.05, this.noiseOffsetY + time*0.05) * p.TWO_PI * 4;
+                  this.vx = p.cos(angle) * this.speed;
+                  this.vy = p.sin(angle) * this.speed;
+                  this.x += this.vx;
+                  this.y += this.vy;
+                  
+                  const pad = 100;
+                  if (this.x < -pad) this.x = p.width + pad;
+                  if (this.x > p.width + pad) this.x = -pad;
+                  if (this.y < -pad) this.y = p.height + pad;
+                  if (this.y > p.height + pad) this.y = -pad;
+              }
+
+              display() {
+                  p.noStroke();
+                  const gridX = p.round(this.x/this.pixelScale)*this.pixelScale;
+                  const gridY = p.round(this.y/this.pixelScale)*this.pixelScale;
+                  
+                  const ang = p.atan2(this.vy, this.vx) + p.PI/2;
+                  const pixels = this.rotatePattern(ang);
+                  const ux = this.vx / this.speed;
+                  const uy = this.vy / this.speed;
+
+                  for (const pix of pixels) {
+                      let px = gridX + pix.x*this.pixelScale;
+                      let py = gridY + pix.y*this.pixelScale;
+                      
+                      // 1. Get Base Color (Variety Logic)
+                      let baseColor = this.getPixelColor(pix.u, pix.v);
+
+                      // 2. Shading
+                      let dp = (pix.x*this.pixelScale)*ux + (pix.y*this.pixelScale)*uy;
+                      let diff = p.map(dp, -30, 30, -1, 1, true);
+                      
+                      let finalC;
+                      if (diff > 0.1) {
+                         // Shadow: darkened version of base color
+                         finalC = p.lerpColor(baseColor, p.color(0, 0, 0), diff * 0.4); 
+                      } else {
+                         finalC = baseColor; 
+                      }
+                      
+                      let displayColor = p.color(p.red(finalC), p.green(finalC), p.blue(finalC));
+                      displayColor.setAlpha(fishOpacity); 
+
+                      p.fill(displayColor);
+                      p.rect(px, py, this.pixelScale, this.pixelScale);
+                  }
+              }
+          }
+
+          class Fish {
+              constructor() {
+                  this.x = p.random(p.width);
+                  this.y = p.random(p.height);
+                  this.noiseOffsetX = p.random(1000);
+                  this.noiseOffsetY = p.random(1000);
+                  this.size = p.random(0.8, 1.2); 
+                  this.vx = 0;
+                  this.vy = 0;
+                  this.flapOffset = p.random(p.TWO_PI);
+                  
+                  this.variety = p.random(KOI_VARIETIES);
+                  this.patternSeed = p.random(1000); 
+
+                  this.basePattern = [
+                    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                    [1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1],
+                    [1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1],
+                    [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0],
+                    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0],
+                  ];
+                  
+                  this.patternCenterX = p.floor(this.basePattern[0].length / 2);
+                  this.patternCenterY = p.floor(this.basePattern.length / 2);
+                  this.pixelScale = 10; 
+              }
+
+              getPixelColor(u, v) {
+                const type = this.variety.type;
+                const cols = this.variety.colors.map(n => getColorByName(n));
+                
+                if (type === 'solid') return cols[0];
+                
+                if (type === 'tancho') {
+                    let dist = p.dist(u, v, 5, 1.5);
+                    if (dist < 1.8) return cols[1]; 
+                    return cols[0]; 
+                }
+                
+                if (type === 'asagi') {
+                   let distFromCenter = Math.abs(u - 5);
+                   if (distFromCenter <= 2 && v < 11) return cols[0]; 
+                   return cols[1]; 
+                }
+
+                let n = p.noise(u * 0.3 + this.patternSeed, v * 0.3 + this.patternSeed);
+                
+                if (type === 'pattern') return n > 0.55 ? cols[1] : cols[0];
+                
+                if (type === 'tricolor') {
+                    if (n < 0.4) return cols[0];      
+                    else if (n < 0.7) return cols[1]; 
+                    else return cols[2];              
+                }
+                
+                return cols[0];
+              }
+
+              rotatePattern(angle) {
+                  const rotatedMap = new Map(); 
+                  const cosA = p.cos(angle), sinA = p.sin(angle);
+                  for (let v=0; v<this.basePattern.length; v++) { 
+                      for (let u=0; u<this.basePattern[v].length; u++) { 
+                          if (this.basePattern[v][u]===1) {
+                              const relX = u - this.patternCenterX;
+                              const relY = v - this.patternCenterY;
+                              const rotX = p.round(relX*cosA - relY*sinA);
+                              const rotY = p.round(relX*sinA + relY*cosA);
+                              const key = `${rotX},${rotY}`;
+                              rotatedMap.set(key, { x: rotX, y: rotY, u: u, v: v });
+                          }
+                      }
+                  }
+                  return Array.from(rotatedMap.values());
+              }
+
+              update() {
+                  let angle = p.noise(this.noiseOffsetX + time*0.1, this.noiseOffsetY + time*0.1) * p.TWO_PI * 2;
+                  const speed = 2.0; 
+                  this.vx = p.cos(angle) * speed;
+                  this.vy = p.sin(angle) * speed;
+                  this.x += this.vx;
+                  this.y += this.vy;
+                  
+                  const pad = 200;
+                  if (this.x < -pad) this.x = p.width + pad;
+                  if (this.x > p.width + pad) this.x = -pad;
+                  if (this.y < -pad) this.y = p.height + pad;
+                  if (this.y > p.height + pad) this.y = -pad;
+              }
+
+              display() {
+                  p.noStroke();
+                  const gridX = p.round(this.x/this.pixelScale)*this.pixelScale;
+                  const gridY = p.round(this.y/this.pixelScale)*this.pixelScale;
+                  const mag = p.sqrt(this.vx*this.vx + this.vy*this.vy);
+                  if (mag===0) return;
+                  
+                  const ang = p.atan2(this.vy,this.vx) + p.PI/2;
+                  const pixels = this.rotatePattern(ang);
+                  const flap = p.sin(time*8 + this.flapOffset); 
+                  const ux = this.vx/mag, uy = this.vy/mag;
+
+                  for (const pix of pixels) {
+                      let px = gridX + pix.x*this.pixelScale;
+                      let py = gridY + pix.y*this.pixelScale;
+                      let baseColor = this.getPixelColor(pix.u, pix.v);
+                      
+                      let dp = (pix.x*this.pixelScale)*ux + (pix.y*this.pixelScale)*uy;
+                      let diff = p.map(dp, -50, 50, -1, 1, true);
+                      
+                      let finalC;
+                      if (diff > 0.1) {
+                         finalC = p.lerpColor(baseColor, p.color(0, 0, 0), diff * 0.3);
+                      } else if (diff < -0.1) {
+                         finalC = p.lerpColor(baseColor, p.color(255, 255, 255), -diff * 0.2);
+                      } else {
+                         finalC = baseColor;
+                      }
+
+                      let wobble = p.map(flap, -1, 1, -2, 2);
+                      if (pix.v > 8) px += wobble; 
+
+                      let displayColor = p.color(p.red(finalC), p.green(finalC), p.blue(finalC));
+                      displayColor.setAlpha(fishOpacity);
+
+                      p.fill(displayColor);
+                      p.rect(px, py, this.pixelScale, this.pixelScale);
+                  }
+              }
+          }
+
+          function getColorByName(name) {
+             switch(name) {
+                // Fish Colors
+                case 'white': return cWhite;
+                case 'red': return cRed;
+                case 'black': return cBlack;
+                case 'gold': return cGold;
+                case 'yellow': return cYellow;
+                case 'blue': return cBlue;
+                case 'brown': return cBrown;
+                case 'orange': return cOrange;
+                // Lobster Colors
+                case 'olive': return cOlive;
+                case 'darkGreen': return cDarkGreen;
+                case 'royalBlue': return cRoyalBlue;
+                case 'pink': return cPink;
+                case 'lightBlue': return cLightBlue;
+                case 'purple': return cPurple;
+                case 'grey': return cGrey;
+                case 'cream': return cCream;
+                default: return cWhite;
+             }
+          }
+
+          p.setup = () => {
+              p.createCanvas(p.windowWidth, p.windowHeight);
+              p.noStroke();
+              
+              sliderElem = document.getElementById('opacitySlider');
+              valueElem = document.getElementById('opacityValue');
+              
+              // Environment
+              waterColor1 = p.color(32,178,170,150);
+              waterColor2 = p.color(0,255,255,150);
+              sandColor   = p.color(194,178,128);
+              
+              // Standard Palette
+              cWhite = p.color(240, 240, 245);
+              cRed   = p.color(220, 40, 40);
+              cBlack = p.color(30, 30, 30);
+              cGold  = p.color(255, 215, 0);
+              cYellow= p.color(255, 220, 50);
+              cBlue  = p.color(60, 90, 140); 
+              cBrown = p.color(120, 80, 40); 
+              cOrange= p.color(255, 140, 0);
+              
+              // Lobster Palette
+              cOlive      = p.color(85, 107, 47);
+              cDarkGreen  = p.color(0, 100, 0);
+              cRoyalBlue  = p.color(65, 105, 225);
+              cPink       = p.color(255, 182, 193);
+              cLightBlue  = p.color(173, 216, 230);
+              cPurple     = p.color(138, 43, 226);
+              cGrey       = p.color(192, 192, 192);
+              cCream      = p.color(255, 253, 208);
+
+              // Spawn Fish
+              for (let i=0;i<12;i++) fish.push(new Fish());
+              
+              // Spawn Lobsters (Added more to see varieties)
+              for (let i=0;i<8;i++) lobsters.push(new Lobster());
+          };
+
+          p.draw = () => {
+              if (sliderElem) {
+                  fishOpacity = parseInt(sliderElem.value);
+                  if (valueElem) valueElem.innerText = fishOpacity;
+              }
+
+              p.background(sandColor);
+              
+              // Water
+              for (let x=0;x<p.width; x+=20) {
+                  for (let y=0;y<p.height; y+=20) {
+                      let wn = p.noise(x*0.005,y*0.005,time*0.1);
+                      p.fill(p.lerpColor(waterColor1, waterColor2, wn));
+                      p.rect(x,y,20,20);
+                  }
+              }
+              
+              // Lobsters
+              lobsters.forEach(l => { l.update(); l.display(); });
+              
+              // Fish
+              fish.forEach(f => { f.update(); f.display(); });
+              
+              // Atmosphere
+              for (let x=0;x<p.width; x+=20) {
+                  for (let y=0;y<p.height; y+=20) {
+                      let cn = p.noise(x*0.02+time*0.3, y*0.02+time*0.3);
+                      if (cn>0.65) { p.fill(255,255,200,cn*80); p.rect(x,y,20,20); }
+                      if (x%40===0 && y%40===0) {
+                          let cl = p.noise(x*0.001+time*0.02,y*0.002+time*0.02);
+                          if (cl>0.5) { p.fill(255,255,255,(cl-0.5)*60); p.rect(x,y,40,40); }
+                      }
+                  }
+              }
+              
+              time += 0.02;
+          };
+
+          p.windowResized = () => {
+              p.resizeCanvas(p.windowWidth, p.windowHeight);
+          };
+      };
+
+      p5_instance = new p5(sketch);
+    </script>
+  </body>
+</html>

@@ -13,10 +13,12 @@
     <style>
         /* Define color variables for light and dark themes */
         :root {
+            --glass-opacity: 0.8;
             --bg-color: #ffffff;
+            --bg-color-rgb: 255, 255, 255;
             --text-color: #1a1a1a;
-            --primary-color: #ff0000; /* Red */
-            --secondary-color: #0000ff; /* Blue */
+            --primary-color: #df3030; /* Red */
+            --secondary-color: #3556ff; /* Blue */
             --tertiary-color: #ffff00; /* Yellow */
             --accent-color: #333333;
             --card-bg: #f7f7f7;
@@ -26,6 +28,7 @@
 
         html.dark {
             --bg-color: #1a1a1a;
+            --bg-color-rgb: 26, 26, 26;
             --text-color: #ffffff;
             --primary-color: #ff3333; /* Brighter Red */
             --secondary-color: #3366ff; /* Brighter Blue */
@@ -34,6 +37,13 @@
             --card-bg: #2a2a2a;
             --card-border: #444444;
             --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-panel {
+            background-color: rgba(var(--bg-color-rgb), var(--glass-opacity));
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
         }
         
         /* General styling */
@@ -177,6 +187,7 @@
     </style>
 </head>
 <body class="antialiased">
+    <iframe src="background.html" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; border: none; pointer-events: none;"></iframe>
 
     <!-- Header -->
     <header id="header" class="sticky top-0 z-40 bg-[var(--bg-color)]/80 backdrop-blur-md border-b border-[var(--card-border)]">
@@ -212,9 +223,9 @@
 
     <main class="container mx-auto px-6 py-12">
         <!-- Main Feature Section -->
-        <section id="feature" class="mb-24">
+        <section id="feature" class="glass-panel mb-24 p-8 rounded-lg">
             <h2 class="text-4xl font-bold mb-8 text-center md:text-left">Main Feature</h2>
-            <div class="flex flex-col md:flex-row items-stretch gap-8 md:gap-12 p-8 rounded-lg" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+            <div class="flex flex-col md:flex-row items-stretch gap-8 md:gap-12">
                 <div class="w-full md:w-1/2">
                     <div class="h-80 md:h-full rounded-lg overflow-hidden">
                         <iframe src="carousel.html" class="w-full h-full" frameborder="0" scrolling="no"></iframe>
@@ -234,7 +245,7 @@
         </section>
 
         <!-- Work Section -->
-        <section id="work" class="mb-24">
+        <section id="work" class="glass-panel mb-24 p-8 rounded-lg">
             <h2 class="text-4xl font-bold mb-8 text-center">All Projects</h2>
             <!-- Filters -->
             <div id="filters" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
@@ -253,7 +264,7 @@
         </section>
 
         <!-- About Section -->
-        <section id="about" class="py-16 rounded-lg text-center" style="background-color: var(--card-bg); border: 1px solid var(--card-border);">
+        <section id="about" class="glass-panel py-16 rounded-lg text-center mb-24">
              <h2 class="text-4xl font-bold mb-4">About Me</h2>
              <p class="max-w-3xl mx-auto text-lg mb-8">
                  I am a creative developer and artist passionate about building unique digital experiences. My work spans across web development, interactive art, video production, and design. Let's create something amazing together.
@@ -270,7 +281,7 @@
 
     </main>
     
-    <footer class="text-center py-6 mt-12 border-t border-[var(--card-border)]">
+    <footer class="glass-panel text-center py-6 mt-12 rounded-t-lg p-4">
         <p style="color: var(--accent-color);">&copy; 2025 Liam Yehudai. All Rights Reserved.</p>
     </footer>
 
@@ -465,6 +476,14 @@
             // --- THEME SWITCHER LOGIC ---
             const themeSwitchers = [document.getElementById('theme-switcher'), document.getElementById('theme-switcher-mobile')];
             const htmlEl = document.documentElement;
+            const backgroundIframe = document.querySelector('iframe[src="background.html"]');
+
+            const syncBackgroundPalette = (theme) => {
+                const paletteName = theme === 'dark' ? 'Bauhaus-ish' : 'TLL';
+                if (backgroundIframe && backgroundIframe.contentWindow && typeof backgroundIframe.contentWindow.setPaletteByName === 'function') {
+                    backgroundIframe.contentWindow.setPaletteByName(paletteName);
+                }
+            };
 
             const applyTheme = (theme) => {
                 if (theme === 'dark') {
@@ -474,11 +493,14 @@
                     htmlEl.classList.add('light');
                     htmlEl.classList.remove('dark');
                 }
+                syncBackgroundPalette(theme);
             };
             
+            // Apply theme on initial load
             const savedTheme = localStorage.getItem('theme') || 'light';
             applyTheme(savedTheme);
-            
+
+            // Add listeners for theme switching
             themeSwitchers.forEach(switcher => {
                 switcher.addEventListener('click', () => {
                     const newTheme = htmlEl.classList.contains('dark') ? 'light' : 'dark';
@@ -487,8 +509,24 @@
                 });
             });
 
+            // Also sync palette when iframe finishes loading, in case it was slow
+            if (backgroundIframe) {
+                backgroundIframe.addEventListener('load', () => {
+                    const currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+                    syncBackgroundPalette(currentTheme);
+                });
+            }
+
 
             // --- EVENT LISTENERS ---
+
+            // Pass mouse movement to background iframe for ripple effect
+            document.addEventListener('mousemove', (e) => {
+                if (backgroundIframe && backgroundIframe.contentWindow && typeof backgroundIframe.contentWindow.updateMousePosition === 'function') {
+                    backgroundIframe.contentWindow.updateMousePosition(e.clientX, e.clientY);
+                }
+            });
+
             filterButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     filterButtons.forEach(btn => btn.classList.remove('active'));
@@ -510,7 +548,38 @@
 
             // --- INITIAL RENDER ---
             renderProjects();
+
+            // --- Opacity Control ---
+            const opacitySlider = document.getElementById('opacity-slider');
+            const opacityValueDisplay = document.getElementById('opacity-value');
+            const root = document.documentElement;
+
+            const applyOpacity = (opacityPercent) => {
+                const opacity = opacityPercent / 100;
+                root.style.setProperty('--glass-opacity', opacity);
+                if (opacityValueDisplay) {
+                    opacityValueDisplay.textContent = `${opacityPercent}%`;
+                }
+                localStorage.setItem('glassOpacity', opacityPercent);
+            };
+
+            if (opacitySlider) {
+                opacitySlider.addEventListener('input', (e) => {
+                    applyOpacity(e.target.value);
+                });
+
+                const savedOpacity = localStorage.getItem('glassOpacity') || '91';
+                opacitySlider.value = savedOpacity;
+                applyOpacity(savedOpacity);
+            }
         });
     </script>
+
+    <!-- Opacity Control Panel -->
+    <div id="opacity-controls" class="fixed bottom-4 right-4 z-50 bg-[var(--card-bg)] p-4 rounded-lg shadow-lg border border-[var(--card-border)] w-48">
+        <label for="opacity-slider" class="block text-sm font-medium mb-2">Glass Opacity</label>
+        <input type="range" id="opacity-slider" min="0" max="100" value="91" class="w-full">
+        <span id="opacity-value" class="text-xs text-center block mt-1">80%</span>
+    </div>
 </body>
 </html>

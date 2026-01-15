@@ -1,0 +1,26 @@
+{
+  "name": "Boid",
+  "type": "Boid",
+  "density": 0.0001653,
+  "size": { "min": 10, "max": 10 },
+  "movement": {
+    "maxSpeed": 3.5,
+    "maxForce": 0.2
+  },
+  "flocking": {
+    "alignPerception": 40,
+    "cohesionPerception": 40,
+    "separationPerception": 25,
+    "alignMultiplier": 1.0,
+    "cohesionMultiplier": 1.2,
+    "separationMultiplier": 2.0
+  },
+  "colors": {
+    "primary": [255, 200, 0],
+    "shadow": [200, 140, 0]
+  },
+  "basePattern": [
+    [1],
+    [1]
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "Lobster",
+  "type": "Lobster",
+  "density": 0.000007475,
+  "movement": {
+    "speed": 0.6
+  },
+  "size": { "min": 10, "max": 10 },
+  "basePattern": [
+    [1, 0, 0, 0, 1],
+    [1, 1, 0, 1, 1],
+    [0, 1, 1, 1, 0],
+    [0, 1, 1, 1, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 1, 1, 1, 0]
+  ],
+  "palette": {
+    "olive": [85, 107, 47],
+    "darkGreen": [0, 100, 0],
+    "royalBlue": [65, 105, 225],
+    "electricBlue": [0, 255, 255],
+    "red": [220, 40, 40],
+    "yellow": [255, 220, 50],
+    "orange": [255, 140, 0],
+    "brown": [120, 80, 40],
+    "cream": [255, 253, 208],
+    "pink": [255, 182, 193],
+    "lightBlue": [173, 216, 230],
+    "purple": [138, 43, 226],
+    "grey": [192, 192, 192]
+  },
+  "varieties": [
+    { "name": "Wild Type", "type": "mottled", "colors": ["olive", "darkGreen", "brown"], "rarity": 1 },
+    { "name": "Red", "type": "solid", "colors": ["red"], "rarity": 3 },
+    { "name": "Blue", "type": "solid", "colors": ["royalBlue"], "rarity": 17 },
+    { "name": "Electric Blue", "type": "solid", "colors": ["electricBlue"], "rarity": 23 },
+    { "name": "Calico", "type": "spotted", "colors": ["yellow", "orange"], "rarity": 7 },
+    { "name": "Split", "type": "split", "colors": ["brown", "orange"], "rarity": 29 },
+    { "name": "Albino", "type": "solid", "colors": ["cream"], "rarity": 19 },
+    { "name": "Cotton Candy", "type": "pastel", "colors": ["pink", "lightBlue"], "rarity": 31 },
+    { "name": "Purple", "type": "solid", "colors": ["purple"], "rarity": 37 },
+    { "name": "Ghost", "type": "solid", "colors": ["grey"], "rarity": 13 },
+    { "name": "Leopard", "type": "spotted", "colors": ["yellow", "brown"], "rarity": 5 }
+  ]
+}

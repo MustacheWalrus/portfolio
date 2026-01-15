@@ -1,0 +1,48 @@
+{
+  "name": "Koi",
+  "type": "Koi",
+  "density": 0.00000097875,
+  "size": { "min": 10, "max": 10 },
+  "speed": 2.0,
+  "palette": {
+    "white": [240, 240, 245],
+    "red": [220, 40, 40],
+    "black": [30, 30, 30],
+    "gold": [255, 215, 0],
+    "yellow": [255, 220, 50],
+    "blue": [60, 90, 140],
+    "brown": [120, 80, 40],
+    "orange": [255, 140, 0]
+  },
+  "varieties": [
+    { "name": "Kohaku", "type": "pattern", "colors": ["white", "red"], "rarity": 1 },
+    { "name": "Tancho", "type": "tancho", "colors": ["white", "red"], "rarity": 13 },
+    { "name": "Sanke", "type": "tricolor", "colors": ["white", "red", "black"], "rarity": 5 },
+    { "name": "Showa", "type": "tricolor", "colors": ["black", "red", "white"], "rarity": 7 },
+    { "name": "Ogon", "type": "solid", "colors": ["gold"], "rarity": 3 },
+    { "name": "Platinum", "type": "solid", "colors": ["white"], "rarity": 3 },
+    { "name": "Orenji", "type": "solid", "colors": ["orange"], "rarity": 3 },
+    { "name": "Chagoi", "type": "solid", "colors": ["brown"], "rarity": 1 },
+    { "name": "Bekko", "type": "pattern", "colors": ["white", "black"], "rarity": 11 },
+    { "name": "Ki Bekko", "type": "pattern", "colors": ["yellow", "black"], "rarity": 17 },
+    { "name": "Kumonryu", "type": "pattern", "colors": ["black", "white"], "rarity": 19 },
+    { "name": "Asagi", "type": "asagi", "colors": ["blue", "red"], "rarity": 23 }
+  ],
+  "basePattern": [
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+    [1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1],
+    [1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1],
+    [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0]
+  ]
+}

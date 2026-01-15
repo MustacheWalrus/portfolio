@@ -1,0 +1,59 @@
+{
+  "name": "Sea Turtle",
+  "type": "SeaTurtle",
+  "density": 0.000001744,
+  "size": { "min": 10, "max": 10 },
+  "movement": {
+    "speed": { "min": 0.5, "max": 1.2 }
+  },
+  "basePattern": [
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0],
+    [0, 1, 1, 1, 2, 2, 2, 1, 1, 1, 0],
+    [1, 1, 0, 2, 2, 2, 2, 2, 0, 1, 1],
+    [1, 1, 0, 2, 2, 2, 2, 2, 0, 1, 1],
+    [1, 0, 0, 2, 2, 2, 2, 2, 0, 0, 1],
+    [1, 0, 0, 2, 2, 2, 2, 2, 0, 0, 1],
+    [0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0],
+    [0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0],
+    [0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0],
+    [0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+  ],
+  "palette": {
+    "olive": [120, 140, 80],
+    "darkOlive": [60, 80, 30],
+    "amber": [255, 191, 0],
+    "brown": [120, 80, 40],
+    "darkGrey": [60, 60, 70],
+    "lightGrey": [180, 180, 190],
+    "redBrown": [139, 69, 19],
+    "tan": [210, 180, 140],
+    "paleGreen": [144, 238, 144],
+    "ghostGrey": [160, 170, 160],
+    "creamWhite": [245, 245, 240],
+    "paleOlive": [140, 150, 100],
+    "yellowCream": [240, 230, 180],
+    "palePink": [235, 190, 190],
+    "slateDark": [70, 80, 90],
+    "charcoal": [20, 20, 25],
+    "gold": [255, 215, 0],
+    "lemonYellow": [255, 250, 150],
+    "white": [240, 240, 245]
+  },
+  "varieties": [
+    { "name": "Green Sea Turtle", "type": "shell_pattern", "colors": ["darkOlive", "olive"], "rarity": 1 },
+    { "name": "Hawksbill", "type": "mottled", "colors": ["amber", "brown"], "rarity": 5 },
+    { "name": "Leatherback", "type": "ridged", "colors": ["darkGrey", "lightGrey"], "rarity": 11 },
+    { "name": "Loggerhead", "type": "solid", "colors": ["redBrown", "tan"], "rarity": 3 },
+    { "name": "Olive Ridley", "type": "solid", "colors": ["olive", "paleGreen"], "rarity": 1 },
+    { "name": "Kemps Ridley", "type": "solid", "colors": ["ghostGrey", "creamWhite"], "rarity": 13 },
+    { "name": "Australian Flatback", "type": "solid", "colors": ["paleOlive", "yellowCream"], "rarity": 17 },
+    { "name": "Albino", "type": "solid", "colors": ["white", "palePink"], "rarity": 23 },
+    { "name": "Black Sea Turtle", "type": "solid", "colors": ["slateDark", "charcoal"], "rarity": 7 },
+    { "name": "Golden Leucistic", "type": "solid", "colors": ["gold", "lemonYellow"], "rarity": 19 }
+  ]
+}

@@ -1,0 +1,96 @@
+<button id="controlsToggle" class="controls-toggle">Toggle Controls</button>
+
+<div id="controls" class="hidden">
+  <label for="opacitySlider">
+    Creature Opacity
+    <span id="opacityValue">75</span>
+  </label>
+  <input type="range" id="opacitySlider" min="0" max="255" value="75">
+  
+  <div id="densitySliders"></div>
+
+  <button id="respawnButton">Respawn</button>
+  <button id="copyButton">Copy Settings</button>
+
+  <div class="instruction">Adjust densities and respawn.</div>
+</div>
+
+<script>
+  // This object will be populated by the main script
+  const uiManager = {
+    p: null,
+    creatureData: null,
+    densityControls: null,
+    spawnCreatures: null,
+
+    initialize: function(p, creatureData, densityControls, spawnCreatures) {
+      this.p = p;
+      this.creatureData = creatureData;
+      this.densityControls = densityControls;
+      this.spawnCreatures = spawnCreatures;
+
+      const controlsPanel = document.getElementById('controls');
+      const toggleButton = document.getElementById('controlsToggle');
+      toggleButton.addEventListener('click', () => controlsPanel.classList.toggle('hidden'));
+
+      const respawnButton = document.getElementById('respawnButton');
+      respawnButton.addEventListener('click', this.spawnCreatures);
+
+      const copyButton = document.getElementById('copyButton');
+      copyButton.addEventListener('click', () => {
+          const settings = {};
+          for (const key in this.densityControls) {
+              settings[key] = this.densityControls[key].slider.value;
+          }
+          navigator.clipboard.writeText(JSON.stringify(settings, null, 2));
+          copyButton.textContent = 'Copied!';
+          setTimeout(() => { copyButton.textContent = 'Copy Settings'; }, 1500);
+      });
+
+      const densitySlidersContainer = document.getElementById('densitySliders');
+      const opacitySlider = document.getElementById('opacitySlider');
+      const opacityValue = document.getElementById('opacityValue');
+      this.densityControls['opacity'] = { slider: opacitySlider, valueElem: opacityValue };
+
+      const loadedCreatureData = Object.values(this.creatureData);
+      for (const data of loadedCreatureData) {
+          if (!data.density) continue;
+          
+          const container = document.createElement('div');
+          const label = document.createElement('label');
+          const valueElem = document.createElement('span');
+          const slider = document.createElement('input');
+          
+          label.htmlFor = `${data.type}Slider`;
+          label.textContent = data.name;
+          
+          slider.type = 'range';
+          slider.id = `${data.type}Slider`;
+          slider.min = 0;
+          slider.max = data.density * 10;
+          slider.step = data.density / 20;
+          slider.value = data.density;
+
+          label.appendChild(valueElem);
+          container.appendChild(label);
+          container.appendChild(slider);
+          densitySlidersContainer.appendChild(container);
+
+          this.densityControls[data.type] = { slider, valueElem };
+      }
+    },
+
+    updateDisplay: function() {
+      for (const key in this.densityControls) {
+          const control = this.densityControls[key];
+          if (control.slider && control.valueElem) {
+              if (key === 'opacity') {
+                  control.valueElem.innerText = control.slider.value;
+              } else {
+                  control.valueElem.innerText = parseFloat(control.slider.value).toExponential(2);
+              }
+          }
+      }
+    }
+  };
+</script>
