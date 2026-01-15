@@ -1,7 +1,7 @@
 {
   "name": "Jellyfish",
   "type": "Jellyfish",
-  "density": 0.00001305,
+  "density": 0.000004437,
   "size": { "min": 10, "max": 10 },
   "opacity": 60,
   "movement": {

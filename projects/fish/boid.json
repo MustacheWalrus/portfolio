@@ -1,7 +1,7 @@
 {
   "name": "Boid",
   "type": "Boid",
-  "density": 0.0001653,
+  "density": 0.000056202,
   "size": { "min": 10, "max": 10 },
   "movement": {
     "maxSpeed": 3.5,

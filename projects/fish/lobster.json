@@ -1,7 +1,7 @@
 {
   "name": "Lobster",
   "type": "Lobster",
-  "density": 0.000007475,
+  "density": 0.0000025415,
   "movement": {
     "speed": 0.6
   },
