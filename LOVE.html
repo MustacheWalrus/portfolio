@@ -102,7 +102,7 @@
     
     new BABYLON.HemisphericLight('h',new BABYLON.Vector3(0,1,0),scene).intensity=0;
 
-    const splatUrl='/assets/LOVE.spz';
+    const splatUrl='assets/LOVE.spz';
     const root=new BABYLON.TransformNode('root',scene);
     let result;
     try{result=await BABYLON.SceneLoader.ImportMeshAsync('',splatUrl.substring(0,splatUrl.lastIndexOf('/')+1),splatUrl.substring(splatUrl.lastIndexOf('/')+1),scene);}catch(e){console.error(e);setStatus('<span class="err">✗</span> Failed to load SPZ');return;}
