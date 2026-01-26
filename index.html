@@ -189,37 +189,7 @@
 <body class="antialiased">
     <iframe src="background.html" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; border: none; pointer-events: none;"></iframe>
 
-    <!-- Header -->
-    <header id="header" class="sticky top-0 z-40 bg-[var(--bg-color)]/80 backdrop-blur-md border-b border-[var(--card-border)]">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold tracking-wider" style="color: var(--text-color);">
-                LIAM YEHUDAI
-            </a>
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="#work" class="text-lg hover:text-[var(--primary-color)] transition-colors">Work</a>
-                <a href="#about" class="text-lg hover:text-[var(--primary-color)] transition-colors">About</a>
-                <div id="theme-switcher" class="theme-switcher">
-                    <div class="theme-switcher-dot"></div>
-                </div>
-            </div>
-            <div class="md:hidden">
-                <button id="mobile-menu-button" class="focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-            <a href="#work" class="block py-2 text-lg hover:text-[var(--primary-color)] transition-colors">Work</a>
-            <a href="#about" class="block py-2 text-lg hover:text-[var(--primary-color)] transition-colors">About</a>
-            <div class="flex items-center mt-2 space-x-4">
-                 <span>Theme:</span>
-                 <div id="theme-switcher-mobile" class="theme-switcher">
-                    <div class="theme-switcher-dot"></div>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Header will be injected here -->
 
     <main class="container mx-auto px-6 py-12">
         <!-- Main Feature Section -->
@@ -275,10 +245,7 @@
 
     </main>
     
-    <footer class="glass-panel text-center py-6 mt-12 rounded-t-lg p-4">
-        <p style="color: var(--accent-color);">&copy; 2025 Liam Yehudai. All Rights Reserved.</p>
-    </footer>
-
+    <!-- Footer will be injected here -->
 
     <!-- Modal -->
     <div id="modal-container" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
@@ -305,7 +272,93 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
 
-            // --- DATA ---
+            // --- LOAD HEADER AND FOOTER ---
+            try {
+                const response = await fetch('HeaderAndFooter.html');
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                
+                const header = doc.querySelector('header');
+                const footer = doc.querySelector('footer');
+                
+                // Insert Header before Main
+                const main = document.querySelector('main');
+                if (main && header) {
+                    main.before(header);
+                }
+
+                // Insert Footer after Main
+                if (main && footer) {
+                    main.after(footer);
+                }
+            } catch (error) {
+                console.error('Error loading header and footer:', error);
+            }
+
+            // --- INITIALIZE UI LOGIC (Now that elements exist) ---
+            
+            // --- THEME SWITCHER LOGIC ---
+            const themeSwitchers = [document.getElementById('theme-switcher'), document.getElementById('theme-switcher-mobile')];
+            const htmlEl = document.documentElement;
+            const backgroundIframe = document.querySelector('iframe[src="background.html"]');
+
+            const syncBackgroundPalette = (theme) => {
+                const paletteName = theme === 'dark' ? 'Bauhaus-ish' : 'TLL';
+                if (backgroundIframe && backgroundIframe.contentWindow && typeof backgroundIframe.contentWindow.setPaletteByName === 'function') {
+                    backgroundIframe.contentWindow.setPaletteByName(paletteName);
+                }
+            };
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    htmlEl.classList.add('dark');
+                    htmlEl.classList.remove('light');
+                } else {
+                    htmlEl.classList.add('light');
+                    htmlEl.classList.remove('dark');
+                }
+                syncBackgroundPalette(theme);
+            };
+            
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+
+            themeSwitchers.forEach(switcher => {
+                if (switcher) {
+                    switcher.addEventListener('click', () => {
+                        const newTheme = htmlEl.classList.contains('dark') ? 'light' : 'dark';
+                        localStorage.setItem('theme', newTheme);
+                        applyTheme(newTheme);
+                    });
+                }
+            });
+
+            if (backgroundIframe) {
+                backgroundIframe.addEventListener('load', () => {
+                    const currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
+                    syncBackgroundPalette(currentTheme);
+                });
+            }
+
+            // --- MOBILE MENU LOGIC ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // --- EVENT LISTENERS (MOUSE MOVE) ---
+            document.addEventListener('mousemove', (e) => {
+                if (backgroundIframe && backgroundIframe.contentWindow && typeof backgroundIframe.contentWindow.updateMousePosition === 'function') {
+                    backgroundIframe.contentWindow.updateMousePosition(e.clientX, e.clientY);
+                }
+            });
+
+
+            // --- PROJECT DATA LOGIC ---
             let projects = [];
             let descriptions = {};
 
@@ -481,102 +534,15 @@
                 }, 300);
             }
 
-            // --- THEME SWITCHER LOGIC ---
-            const themeSwitchers = [document.getElementById('theme-switcher'), document.getElementById('theme-switcher-mobile')];
-            const htmlEl = document.documentElement;
-            const backgroundIframe = document.querySelector('iframe[src="background.html"]');
-
-            const syncBackgroundPalette = (theme) => {
-                const paletteName = theme === 'dark' ? 'Bauhaus-ish' : 'TLL';
-                if (backgroundIframe && backgroundIframe.contentWindow && typeof backgroundIframe.contentWindow.setPaletteByName === 'function') {
-                    backgroundIframe.contentWindow.setPaletteByName(paletteName);
-                }
-            };
-
-            const applyTheme = (theme) => {
-                if (theme === 'dark') {
-                    htmlEl.classList.add('dark');
-                    htmlEl.classList.remove('light');
-                } else {
-                    htmlEl.classList.add('light');
-                    htmlEl.classList.remove('dark');
-                }
-                syncBackgroundPalette(theme);
-            };
-            
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            applyTheme(savedTheme);
-
-            themeSwitchers.forEach(switcher => {
-                switcher.addEventListener('click', () => {
-                    const newTheme = htmlEl.classList.contains('dark') ? 'light' : 'dark';
-                    localStorage.setItem('theme', newTheme);
-                    applyTheme(newTheme);
-                });
-            });
-
-            if (backgroundIframe) {
-                backgroundIframe.addEventListener('load', () => {
-                    const currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
-                    syncBackgroundPalette(currentTheme);
-                });
-            }
-
-
-            // --- EVENT LISTENERS ---
-            document.addEventListener('mousemove', (e) => {
-                if (backgroundIframe && backgroundIframe.contentWindow && typeof backgroundIframe.contentWindow.updateMousePosition === 'function') {
-                    backgroundIframe.contentWindow.updateMousePosition(e.clientX, e.clientY);
-                }
-            });
-
             modalCloseBtn.addEventListener('click', closeModal);
             modalBackdrop.addEventListener('click', closeModal);
-            
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-
 
             // --- INITIAL RENDER ---
             if (projects.length > 0) {
                  createFilterButtons();
                  renderProjects();
             }
-
-            // --- Opacity Control ---
-            const opacitySlider = document.getElementById('opacity-slider');
-            const opacityValueDisplay = document.getElementById('opacity-value');
-            const root = document.documentElement;
-
-            const applyOpacity = (opacityPercent) => {
-                const opacity = opacityPercent / 100;
-                root.style.setProperty('--glass-opacity', opacity);
-                if (opacityValueDisplay) {
-                    opacityValueDisplay.textContent = `${opacityPercent}%`;
-                }
-                localStorage.setItem('glassOpacity', opacityPercent);
-            };
-
-            if (opacitySlider) {
-                opacitySlider.addEventListener('input', (e) => {
-                    applyOpacity(e.target.value);
-                });
-
-                const savedOpacity = localStorage.getItem('glassOpacity') || '91';
-                opacitySlider.value = savedOpacity;
-                applyOpacity(savedOpacity);
-            }
         });
     </script>
-
-    <!-- Opacity Control Panel -->
-    <div id="opacity-controls" class="fixed bottom-4 right-4 z-50 bg-[var(--card-bg)] p-4 rounded-lg shadow-lg border border-[var(--card-border)] w-48">
-        <label for="opacity-slider" class="block text-sm font-medium mb-2">Glass Opacity</label>
-        <input type="range" id="opacity-slider" min="0" max="100" value="91" class="w-full">
-        <span id="opacity-value" class="text-xs text-center block mt-1">80%</span>
-    </div>
 </body>
 </html>

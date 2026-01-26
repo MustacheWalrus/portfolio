@@ -302,5 +302,17 @@
         "year": "2025",
         "thumbnail": "assets/thumbnails/isopod.gif",
         "iframe": true
+    },
+    {
+        "title": "This Website",
+        "link": "https://mustachewalrus.github.io/portfolio/",
+        "tags": [
+            "Website"
+        ],
+        "contributors": "Liam Yehudai",
+        "year": "2025-2026",
+        "thumbnail": "assets/thumbnails/This-Website.gif",
+        "iframe": true,
+        "hidden": false
     }
 ]

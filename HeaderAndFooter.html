@@ -1,0 +1,37 @@
+    <!-- Header -->
+    <header id="header" class="sticky top-0 z-40 bg-[var(--bg-color)]/80 backdrop-blur-md border-b border-[var(--card-border)]">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold tracking-wider" style="color: var(--text-color);">
+                LIAM YEHUDAI
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#work" class="text-lg hover:text-[var(--primary-color)] transition-colors">Work</a>
+                <a href="blog.html" class="text-lg hover:text-[var(--primary-color)] transition-colors">Blog</a>
+                <a href="#about" class="text-lg hover:text-[var(--primary-color)] transition-colors">About</a>
+                <div id="theme-switcher" class="theme-switcher">
+                    <div class="theme-switcher-dot"></div>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#work" class="block py-2 text-lg hover:text-[var(--primary-color)] transition-colors">Work</a>
+            <a href="blog.html" class="block py-2 text-lg hover:text-[var(--primary-color)] transition-colors">Blog</a>
+            <a href="#about" class="block py-2 text-lg hover:text-[var(--primary-color)] transition-colors">About</a>
+            <div class="flex items-center mt-2 space-x-4">
+                 <span>Theme:</span>
+                 <div id="theme-switcher-mobile" class="theme-switcher">
+                    <div class="theme-switcher-dot"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <footer class="glass-panel text-center py-6 mt-12 rounded-t-lg p-4">
+        <p style="color: var(--accent-color);">&copy; 2025 Liam Yehudai. All Rights Reserved.</p>
+    </footer>
