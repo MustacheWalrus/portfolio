@@ -1,0 +1,306 @@
+[
+    {
+        "title": "TLL Design Guide",
+        "link": "assets/TLL.pdf",
+        "tags": [
+            "Illustration"
+        ],
+        "contributors": "",
+        "year": "Spring 2025",
+        "thumbnail": "assets/thumbnails/TLLStyleGuide.png",
+        "iframe": false
+    },
+    {
+        "title": "A year in Review",
+        "link": "https://www.youtube.com/watch?v=OmYZTwA-nPw",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "Spring 2024",
+        "thumbnail": "https://img.youtube.com/vi/OmYZTwA-nPw/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Power of Love",
+        "link": "LOVE.html",
+        "tags": [
+            "3d"
+        ],
+        "contributors": "",
+        "year": "Spring 2025",
+        "thumbnail": "assets/thumbnails/LOVE.gif",
+        "iframe": false,
+        "hidden": false
+    },
+    {
+        "title": "Interactive Sky Animation",
+        "link": "projects/interactive-sky-demo.html",
+        "tags": [
+            "Interactive"
+        ],
+        "contributors": "",
+        "year": "Spring 2025",
+        "thumbnail": "projects/interactive-sky-thumb.html",
+        "iframe": true
+    },
+    {
+        "title": "Pixel Manta Rays",
+        "link": "projects/ocean-sketch.html",
+        "tags": [
+            "Interactive"
+        ],
+        "contributors": "",
+        "year": "Spring 2025",
+        "thumbnail": "projects/ocean-sketch-thumb.html",
+        "iframe": true
+    },
+    {
+        "title": "technology is cyclical",
+        "link": "https://www.youtube.com/watch?v=bt-z-nS4R7g",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "Fall 2024",
+        "thumbnail": "https://img.youtube.com/vi/bt-z-nS4R7g/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Spaced Out",
+        "link": "https://www.youtube.com/watch?v=iaWw4Xpy7aU",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "Fall 2024",
+        "thumbnail": "https://img.youtube.com/vi/iaWw4Xpy7aU/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Parallax city scape",
+        "link": "projects/skyline.html",
+        "tags": [
+            "Interactive"
+        ],
+        "contributors": "",
+        "year": "Fall 2024",
+        "thumbnail": "projects/skyline.html",
+        "iframe": true
+    },
+    {
+        "title": "MAC Video Essay",
+        "link": "https://www.youtube.com/watch?v=uZQr_79ujAU",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "Spring 2025",
+        "thumbnail": "https://img.youtube.com/vi/uZQr_79ujAU/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Bossa Nova Boy",
+        "link": "projects/bossa-nova-boy.html",
+        "tags": [
+            "3d"
+        ],
+        "contributors": "",
+        "year": "Spring 2024",
+        "thumbnail": "assets/thumbnails/LOFI.png",
+        "iframe": false,
+        "hidden": true
+    },
+    {
+        "title": "EPMO OFFICE",
+        "link": "https://www.youtube.com/watch?v=uROSMdFQy4w",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "Fall 2022",
+        "thumbnail": "https://img.youtube.com/vi/uROSMdFQy4w/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "WUSB.FM",
+        "link": "https://www.wusb.fm/",
+        "tags": [
+            "Website"
+        ],
+        "contributors": "",
+        "year": "Ongoing",
+        "thumbnail": "assets/thumbnails/WUSB.png",
+        "iframe": false,
+        "hidden": false
+    },
+    {
+        "title": "LI History Journal",
+        "link": "projects/li-history-journal.html",
+        "tags": [
+            "Website"
+        ],
+        "contributors": "",
+        "year": "Fall 2021",
+        "thumbnail": "assets/thumbnails/Lihj.gif",
+        "iframe": false
+    },
+    {
+        "title": "Envirodanger Website",
+        "link": "projects/envirodanger.html",
+        "tags": [
+            "Website"
+        ],
+        "contributors": "",
+        "year": "2019-2025",
+        "thumbnail": "assets/thumbnails/Envirodangers.gif",
+        "iframe": false
+    },
+    {
+        "title": "Remove the Sunglasses",
+        "link": "https://www.youtube.com/watch?v=TVTW61FRNuc",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "2020",
+        "thumbnail": "https://img.youtube.com/vi/TVTW61FRNuc/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Wall of Painting Bumper",
+        "link": "https://www.youtube.com/watch?v=ooMB7mttbEc",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "2022",
+        "thumbnail": "https://img.youtube.com/vi/ooMB7mttbEc/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Pikachu overlay",
+        "link": "https://www.youtube.com/watch?v=1BZJmysHj88",
+        "tags": [
+            "Video"
+        ],
+        "contributors": "",
+        "year": "2022",
+        "thumbnail": "https://img.youtube.com/vi/1BZJmysHj88/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Groundhogs Day",
+        "link": "https://www.youtube.com/watch?v=U7x193euDBk",
+        "tags": [
+            "Audio"
+        ],
+        "contributors": "",
+        "year": "2022",
+        "thumbnail": "https://img.youtube.com/vi/U7x193euDBk/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "N\u00fc",
+        "link": "https://www.youtube.com/watch?v=eR7JtdQkjM8",
+        "tags": [
+            "Audio"
+        ],
+        "contributors": "",
+        "year": "2019",
+        "thumbnail": "https://img.youtube.com/vi/eR7JtdQkjM8/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "H-beat",
+        "link": "https://www.youtube.com/watch?v=AB340Xx71sI",
+        "tags": [
+            "Audio"
+        ],
+        "contributors": "",
+        "year": "2019",
+        "thumbnail": "https://img.youtube.com/vi/AB340Xx71sI/hqdefault.jpg",
+        "iframe": false
+    },
+    {
+        "title": "Grord Album Cover",
+        "link": "projects/grord-album-cover.html",
+        "tags": [
+            "Illustration"
+        ],
+        "contributors": "",
+        "year": "2021",
+        "thumbnail": "assets/thumbnails/grord-album-cover.jpg",
+        "iframe": false,
+        "hidden": true
+    },
+    {
+        "title": "Revamp of Blooms Taxonomy Wheel",
+        "link": "https://apps.tlt.stonybrook.edu/bloomsTaxonomyWheel/",
+        "tags": [
+            "Illustration"
+        ],
+        "contributors": "Liam Yehudai, Paul St. Denis for the website",
+        "year": "2019",
+        "thumbnail": "assets/thumbnails/BloomsTaxonomyWheel.png",
+        "iframe": false
+    },
+    {
+        "title": "Faculty Flyer",
+        "link": "projects/faculty-flyer.html",
+        "tags": [
+            "Illustration"
+        ],
+        "contributors": "",
+        "year": "2019",
+        "thumbnail": "assets/thumbnails/FacultyCommonFlyer.png",
+        "iframe": false,
+        "hidden": true
+    },
+    {
+        "title": "Hi Hat in Dough and tides not as so",
+        "link": "https://sbutltmedia.github.io/ThinkingMattersExercises/Card_Game/",
+        "tags": [
+            "Illustration"
+        ],
+        "contributors": "",
+        "year": "2025",
+        "thumbnail": "assets/thumbnails/hi-hat-dough.jpg",
+        "iframe": false,
+        "hidden": false
+    },
+    {
+        "title": "3D Virtual Gallery",
+        "link": "https://sbutltmedia.github.io/ARS205/",
+        "tags": [
+            "3d"
+        ],
+        "contributors": "Liam Yehudai",
+        "year": "2025",
+        "thumbnail": "assets/thumbnails/ARS205.gif",
+        "iframe": false
+    },
+    {
+        "title": "Gsplat virtual Gallery",
+        "link": "https://sbutltmedia.github.io/CDN/gsplat/",
+        "tags": [
+            "3d",
+            "Interactive"
+        ],
+        "contributors": "Liam Yehudai",
+        "year": "2025",
+        "thumbnail": "assets/thumbnails/Gallery.gif",
+        "iframe": true
+    },
+    {
+        "title": "Isopod Dichotomous Key",
+        "link": "https://sbutltmedia.github.io/CDN/Isopod/dichotomousKey.html",
+        "tags": [
+            "Interactive"
+        ],
+        "contributors": "Liam Yehudai",
+        "year": "2025",
+        "thumbnail": "assets/thumbnails/isopod.gif",
+        "iframe": true
+    }
+]

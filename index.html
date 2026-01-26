@@ -249,13 +249,7 @@
             <h2 class="text-4xl font-bold mb-8 text-center">All Projects</h2>
             <!-- Filters -->
             <div id="filters" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
-                <button class="filter-btn active px-4 py-2" data-filter="all">All</button>
-                <button class="filter-btn px-4 py-2" data-filter="video">Video</button>
-                <button class="filter-btn px-4 py-2" data-filter="interactive">Interactive</button>
-                <button class="filter-btn px-4 py-2" data-filter="website">Website</button>
-                <button class="filter-btn px-4 py-2" data-filter="3d">3D Scan</button>
-                <button class="filter-btn px-4 py-2" data-filter="audio">Audio</button>
-                <button class="filter-btn px-4 py-2" data-filter="illustration">Illustration</button>
+                <!-- Filters will be dynamically inserted here -->
             </div>
             <!-- Project Grid -->
             <div id="project-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -309,51 +303,24 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
 
             // --- DATA ---
-            const projects = [
-                { id: "tll-design-guide", title: "TLL Design Guide", date: "Spring 2025", category: "illustration", mediaType: 'pdf', thumbnailImageUrl: 'assets/thumbnails/TLLStyleGuide.png', imageUrl: 'assets/images/TLLStyleGuide.png' },
-                { id: "year-in-review", title: "A year in Review", date: "Spring 2024", category: "video", mediaType: 'video', youtubeId: 'OmYZTwA-nPw' },
-                { id: "power-of-love", title: "Power of Love", date: "Spring 2025", category: "3d", mediaType: '3d-scan', thumbnailImageUrl: 'assets/thumbnails/LOVE.gif', imageUrl: 'assets/images/LOVE.gif' },
-                { id: "interactive-sky", title: "Interactive Sky Animation", date: "Spring 2025", category: "interactive", mediaType: 'p5js', thumbnailUrl: 'projects/interactive-sky-thumb.html' },
-                { id: "pixel-manta-rays", title: "Pixel Manta Rays", date: "Spring 2025", category: "interactive", mediaType: 'p5js', thumbnailUrl: 'projects/ocean-sketch-thumb.html' },
-                { id: "tech-cyclical", title: "technology is cyclical", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId: 'bt-z-nS4R7g' },
-                { id: "spaced-out", title: "Spaced Out", date: "Fall 2024", category: "video", mediaType: 'video', youtubeId:'iaWw4Xpy7aU' },
-                { id: "parallax-city", title: "Parallax city scape", date: "Fall 2024", category: "interactive", mediaType: 'p5js', thumbnailUrl: 'projects/skyline.html' },
-                { id: "mac-video-essay", title: "MAC Video Essay", date: "Spring 2025", category: "video", mediaType: 'video', youtubeId: 'uZQr_79ujAU' },
-                { id: "bossa-nova-boy", title: "Bossa Nova Boy", date: "Spring 2024", category: "3d", mediaType: '3d-scan', thumbnailImageUrl: 'assets/thumbnails/LOFI.png', imageUrl: 'assets/images/LOFI.png' },
-                // { id: "liam-lars", title: "Liam and Lars Project", date: "Fall 2023", category: "video", mediaType: 'video', youtubeId: null },
-                { id: "epmo-office", title: "EPMO OFFICE", date: "Fall 2022", category: "video", mediaType: 'video', youtubeId: 'uROSMdFQy4w' },
-                { id: "wusb-fm", title: "WUSB.FM", date: "Ongoing", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/WUSB.png', imageUrl: 'assets/images/WUSB.png' },
-                { id: "li-history-journal", title: "LI History Journal", date: "Fall 2021", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/Envirodangers.png', imageUrl: 'assets/images/Envirodangers.png'},
-                { id: "envirodanger", title: "Envirodanger Website", date: "2019-2025", category: "website", mediaType: 'website', thumbnailImageUrl: 'assets/thumbnails/LongIslandHistoryJournal.png', imageUrl: 'assets/images/LongIslandHistoryJournal.png' },
-                { id: "remove-sunglasses", title: "Remove the Sunglasses", date: "2020", category: "video", mediaType: 'video', youtubeId: 'TVTW61FRNuc' },
-                { id: "wall-of-painting", title: "Wall of Painting Bumper", date: "2022", category: "video", mediaType: 'video', youtubeId: 'ooMB7mttbEc' },
-                { id: "pikachu-overlay", title: "Pikachu overlay", date: "2022", category: "video", mediaType: 'video', youtubeId: '1BZJmysHj88' },
-                // { id: "twow-fm", title: "Twow FM", date: "2018", category: "audio", mediaType: 'audio', youtubeId: 'ooMB7mttbEc' },
-                { id: "groundhogs-day", title: "Groundhogs Day", date: "2022", category: "audio", mediaType: 'audio', youtubeId: 'U7x193euDBk' },
-                { id: "nu-audio", title: "Nü", date: "2019", category: "audio", mediaType: 'audio', youtubeId: 'eR7JtdQkjM8' },
-                { id: "h-beat", title: "H-beat", date: "2019", category: "audio", mediaType: 'audio', youtubeId: 'AB340Xx71sI' },
-                { id: "grord-album-cover", title: "Grord Album Cover", date: "2021", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/grord-album-cover.jpg', imageUrl: 'assets/images/grord-album-cover.jpg' },
-                { id: "blooms-taxonomy-wheel", title: "Revamp of Blooms Taxonomy Wheel", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/BloomsTaxonomyWheel.png', imageUrl: 'assets/images/BloomsTaxonomyWheel.png' },
-                { id: "faculty-flyer", title: "Faculty Flyer", date: "2019", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/FacultyCommonFlyer.png', imageUrl: 'assets/images/FacultyCommonFlyer.png' },
-                { id: "hi-hat-dough", title: "Hi Hat in Dough and tides not as so", date: "2025", category: "illustration", mediaType: 'image', thumbnailImageUrl: 'assets/thumbnails/hi-hat-dough.jpg', imageUrl: 'assets/images/hi-hat-dough.jpg' },
-            ];
+            let projects = [];
+            let descriptions = {};
 
-            // Replaced Custom SVGs with FontAwesome Icons
-            const placeholders = {
-                video: `<i class="fa-solid fa-video text-6xl" style="color: var(--accent-color);"></i>`,
-                interactive: `<i class="fa-solid fa-fingerprint text-6xl" style="color: var(--accent-color);"></i>`,
-                website: `<i class="fa-solid fa-laptop-code text-6xl" style="color: var(--accent-color);"></i>`,
-                '3d': `<i class="fa-solid fa-cube text-6xl" style="color: var(--accent-color);"></i>`,
-                audio: `<i class="fa-solid fa-music text-6xl" style="color: var(--accent-color);"></i>`,
-                illustration: `<i class="fa-solid fa-image text-6xl" style="color: var(--accent-color);"></i>`
-            };
-            
+            try {
+                const projectsResponse = await fetch('ProjectData.json');
+                projects = await projectsResponse.json();
+                const descriptionsResponse = await fetch('Descriptions.json');
+                descriptions = await descriptionsResponse.json();
+            } catch (error) {
+                console.error('Error fetching project data:', error);
+            }
+
             // --- ELEMENTS ---
             const projectGrid = document.getElementById('project-grid');
-            const filterButtons = document.querySelectorAll('.filter-btn');
+            const filtersContainer = document.getElementById('filters');
             const modalContainer = document.getElementById('modal-container');
             const modalBackdrop = document.getElementById('modal-backdrop');
             const modalCloseBtn = document.getElementById('modal-close-btn');
@@ -366,33 +333,35 @@
             // --- FUNCTIONS ---
             function renderProjects(filter = 'all') {
                 projectGrid.innerHTML = '';
+                
+                // First, filter out hidden projects
+                let visibleProjects = projects.filter(p => !p.hidden);
+
+                // Then apply category filter
                 const filteredProjects = filter === 'all' 
-                    ? projects 
-                    : projects.filter(p => p.category === filter);
+                    ? visibleProjects 
+                    : visibleProjects.filter(p => p.tags.includes(filter));
 
                 filteredProjects.forEach(project => {
-                    let tileContent;
-                    if (project.thumbnailUrl) {
-                        tileContent = `<iframe src="${project.thumbnailUrl}" class="w-full h-full" frameborder="0" scrolling="no"></iframe>`;
-                    } else if (project.thumbnailImageUrl) {
-                        tileContent = `<img src="${project.thumbnailImageUrl}" alt="${project.title}" class="w-full h-full object-cover">`;
-                    } else if (['video', 'audio', '3d-scan'].includes(project.category) && project.youtubeId) {
-                        tileContent = `<img src="https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg" alt="${project.title}" class="w-full h-full object-cover">`;
-                    } else {
-                        // Use the FontAwesome icon from the placeholders object
-                        const placeholderIcon = placeholders[project.category] || placeholders['illustration'];
-                        tileContent = `<div class="w-full h-full flex items-center justify-center p-4 bg-gray-100 dark:bg-gray-800 transition-colors duration-300">${placeholderIcon}</div>`;
-                    }
-
                     const card = document.createElement('div');
                     card.className = 'project-card rounded-lg overflow-hidden cursor-pointer';
-                    card.dataset.id = project.id;
+                    card.dataset.title = project.title;
+                    const thumb = project.thumbnail || 'https://via.placeholder.com/300';
+                    
+                    let mediaContent = '';
+                    if (thumb.endsWith('.html')) {
+                         mediaContent = `<iframe src="${thumb}" class="w-full h-full" frameborder="0" scrolling="no"></iframe>`;
+                    } else if (thumb.includes('youtube.com') || thumb.includes('youtu.be')) {
+                         mediaContent = `<img src="${thumb}" alt="${project.title}" class="w-full h-full object-cover">`;
+                    } else {
+                         mediaContent = `<img src="${thumb}" alt="${project.title}" class="w-full h-full object-cover">`;
+                    }
+
                     card.innerHTML = `
                         <div class="aspect-16-9">
-                            ${tileContent}
+                            ${mediaContent}
                             <div class="info-overlay absolute inset-0 bg-black/70 p-4 flex flex-col justify-end text-white">
                                 <h3 class="text-xl font-bold">${project.title}</h3>
-                                <p class="font-mono text-sm">${project.date} &mdash; ${project.mediaType}</p>
                             </div>
                         </div>
                     `;
@@ -401,62 +370,102 @@
 
                 // Add event listeners to newly created cards
                 document.querySelectorAll('.project-card').forEach(card => {
-                    card.addEventListener('click', () => openModal(card.dataset.id));
+                    card.addEventListener('click', () => openModal(card.dataset.title));
                 });
             }
 
-            async function openModal(projectId) {
-                const project = projects.find(p => p.id === projectId);
+            function createFilterButtons() {
+                const allTags = new Set();
+                // Only collect tags from visible projects
+                projects.filter(p => !p.hidden).forEach(p => p.tags.forEach(t => allTags.add(t)));
+                
+                const sortedTags = Array.from(allTags).sort();
+
+                filtersContainer.innerHTML = '<button class="filter-btn active px-4 py-2" data-filter="all">All</button>';
+
+                sortedTags.forEach(tag => {
+                    const button = document.createElement('button');
+                    button.className = 'filter-btn px-4 py-2';
+                    button.dataset.filter = tag;
+                    button.textContent = tag;
+                    filtersContainer.appendChild(button);
+                });
+
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        filterButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        renderProjects(button.dataset.filter);
+                    });
+                });
+            }
+
+            function openModal(projectTitle) {
+                const project = projects.find(p => p.title === projectTitle);
                 if (!project) return;
 
                 modalTitle.textContent = project.title;
-                modalDate.textContent = project.date;
-                modalMedium.textContent = project.mediaType;
-
-                // Set a loading state
-                modalBodyContent.innerHTML = `<p class="text-center">Loading project...</p>`;
-                modalBlurb.innerHTML = '';
-
-                try {
-                    // This is the correct method for your GitHub pages site.
-                    // It will fail in the preview environment but work on a live server.
-                    // We try-catch this because it will definitely fail in the Canvas preview.
-                    const response = await fetch(`projects/${projectId}.html`);
-                    if (!response.ok) throw new Error('Network response was not ok.');
-                    
-                    const contentHtml = await response.text();
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(contentHtml, 'text/html');
-                    
-                    const contentNode = doc.querySelector('.project-content');
-                    const blurbNode = doc.querySelector('.project-blurb');
-
-                    modalBodyContent.innerHTML = contentNode ? contentNode.innerHTML : '';
-                    modalBlurb.innerHTML = blurbNode ? blurbNode.innerHTML : 'No description available.';
-
-                } catch (error) {
-                    console.warn(`Fetch failed (expected in preview environment): ${error.message}`);
-                    
-                    // FALLBACK CONTENT FOR PREVIEW
-                    // This ensures the modal isn't empty in the canvas view
-                    let fallbackContent = '';
-                    
-                    if (project.thumbnailUrl) {
-                         fallbackContent = `<div class="aspect-16-9"><iframe src="${project.thumbnailUrl}" class="w-full h-full" frameborder="0"></iframe></div>`;
-                    } else if (project.thumbnailImageUrl) {
-                         fallbackContent = `<img src="${project.imageUrl || project.thumbnailImageUrl}" alt="${project.title}" class="w-full rounded-lg">`;
-                    } else if (project.youtubeId) {
-                        fallbackContent = `<div class="aspect-16-9"><iframe src="https://www.youtube.com/embed/${project.youtubeId}" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div>`;
-                    } else {
-                         const placeholderIcon = placeholders[project.category] || placeholders['illustration'];
-                         // Display large icon
-                         fallbackContent = `<div class="w-full h-64 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-lg">${placeholderIcon.replace('text-6xl', 'text-9xl')}</div>`;
-                    }
-                    
-                    modalBodyContent.innerHTML = fallbackContent;
-                    modalBlurb.innerHTML = `<p class="italic text-gray-500 mb-4">(Preview Mode Note: This content would normally load from <code>projects/${projectId}.html</code>, but that file doesn't exist in this preview environment. Displaying placeholder content instead.)</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>`;
+                
+                const metaParts = [];
+                if (project.year) metaParts.push(project.year);
+                if (project.tags && project.tags.length) metaParts.push(project.tags.join(', '));
+                
+                let metaHtml = metaParts.join(' &mdash; ');
+                if (project.contributors) {
+                    metaHtml += `<br><span class="text-sm opacity-75">By ${project.contributors}</span>`;
                 }
+
+                modalDate.innerHTML = ''; 
+                modalMedium.innerHTML = metaHtml; 
+                
+                const isIframe = project.iframe === true; 
+                const thumb = project.thumbnail || 'https://via.placeholder.com/800x450';
+
+                // Check for YouTube link
+                let youtubeId = null;
+                const ytMatch = project.link.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+                if (ytMatch && ytMatch[1]) {
+                    youtubeId = ytMatch[1];
+                }
+
+                let contentHtml = '';
+                if (youtubeId) {
+                    // It's a YouTube video, embed it directly without overlay
+                    contentHtml = `
+                        <iframe src="https://www.youtube.com/embed/${youtubeId}?autoplay=1" class="w-full h-64 md:h-96" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    `;
+                    // Note: No overlay div added here
+                } else if (isIframe) {
+                    contentHtml = `
+                        <iframe src="${project.link}" class="w-full h-64 md:h-96" frameborder="0"></iframe>
+                        <div class="overlay">Click to Explore</div>
+                    `;
+                } else {
+                    contentHtml = `
+                        <img src="${thumb}" class="w-full h-auto object-cover rounded max-h-96 mx-auto" alt="${project.title}">
+                        <div class="overlay">Click to Explore</div>
+                    `;
+                }
+
+                // If it's a YouTube video, we don't wrap in an anchor tag because the iframe is interactive
+                if (youtubeId) {
+                     modalBodyContent.innerHTML = `
+                        <div class="project-content relative group">
+                            ${contentHtml}
+                        </div>
+                    `;
+                } else {
+                    modalBodyContent.innerHTML = `
+                        <div class="project-content relative group">
+                            <a href="${project.link}" target="_blank" class="block relative">
+                                ${contentHtml}
+                            </a>
+                        </div>
+                    `;
+                }
+                
+                modalBlurb.innerHTML = descriptions[project.title] || 'No description available.';
 
                 modalContainer.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
@@ -466,10 +475,9 @@
             function closeModal() {
                 modalContainer.classList.remove('open');
                 document.body.style.overflow = '';
-                 // Wait for transition to finish before hiding
                 setTimeout(() => {
                     modalContainer.classList.add('hidden');
-                    modalBodyContent.innerHTML = ''; // Clear content to stop videos/iframes
+                    modalBodyContent.innerHTML = ''; 
                 }, 300);
             }
 
@@ -496,11 +504,9 @@
                 syncBackgroundPalette(theme);
             };
             
-            // Apply theme on initial load
             const savedTheme = localStorage.getItem('theme') || 'light';
             applyTheme(savedTheme);
 
-            // Add listeners for theme switching
             themeSwitchers.forEach(switcher => {
                 switcher.addEventListener('click', () => {
                     const newTheme = htmlEl.classList.contains('dark') ? 'light' : 'dark';
@@ -509,7 +515,6 @@
                 });
             });
 
-            // Also sync palette when iframe finishes loading, in case it was slow
             if (backgroundIframe) {
                 backgroundIframe.addEventListener('load', () => {
                     const currentTheme = htmlEl.classList.contains('dark') ? 'dark' : 'light';
@@ -519,26 +524,15 @@
 
 
             // --- EVENT LISTENERS ---
-
-            // Pass mouse movement to background iframe for ripple effect
             document.addEventListener('mousemove', (e) => {
                 if (backgroundIframe && backgroundIframe.contentWindow && typeof backgroundIframe.contentWindow.updateMousePosition === 'function') {
                     backgroundIframe.contentWindow.updateMousePosition(e.clientX, e.clientY);
                 }
             });
 
-            filterButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    renderProjects(button.dataset.filter);
-                });
-            });
-
             modalCloseBtn.addEventListener('click', closeModal);
             modalBackdrop.addEventListener('click', closeModal);
             
-            // Mobile Menu
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenuButton.addEventListener('click', () => {
@@ -547,7 +541,10 @@
 
 
             // --- INITIAL RENDER ---
-            renderProjects();
+            if (projects.length > 0) {
+                 createFilterButtons();
+                 renderProjects();
+            }
 
             // --- Opacity Control ---
             const opacitySlider = document.getElementById('opacity-slider');
